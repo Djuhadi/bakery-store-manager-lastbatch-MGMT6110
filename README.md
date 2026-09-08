@@ -30,8 +30,5 @@ A closing-time markdown tool for bakery store managers.
 ---
 
 ## Submission files
-PROMPTS.md — every prompt sent, in order, with what came back and what changed next and why.
-REFLECTION.md — the five reflection questions, answered about this build.
-
 - **[`PROMPTS.md`](PROMPTS.md)** — every prompt sent, in order, with what came back and what changed next and why.
 - **[`REFLECTION.md`](REFLECTION.md)** — the five reflection questions, answered about this build.
