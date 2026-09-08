@@ -1,6 +1,7 @@
-# REFLECTION.md — LastBatch
-*Student*: Isabella Djuhadi · *Course*: MGMT 6110 · *Problem Set 1*
----
+# PROMPTS.md — LastBatch
+
+## **Student:** Isabella Djuhadi · **Course:** MGMT 6110 · **Problem Set 1**  
+
 
 ## 1. Who are your users, and what changes for them?
 The user of LastBatch is a bakery store manager working the closing shift at a small chain of around forty neighbourhood shops. This is an internal user whose existing work is being augmented: the manager is responsible for the fresh-food markdown and waste decision at the end of each trading day. At around 5 PM, the manager currently walks the shelves and decides from memory whether each unsold item should receive a 20% discount, a 50% discount, or be pulled. There is no record of those decisions or their cost.
@@ -8,7 +9,7 @@ LastBatch changes this by replacing the memory-based shelf walk with a structure
 
 ## 2. How did AI increase AND limit your abilities?
 AI significantly increased my capacity because I am not a programmer. My main contribution was defining the business problem, user, workflow and constraints, while Google AI Studio translated that specification into a working React application with two screens. This allowed me to spend more time evaluating whether the product made sense rather than manually building the interface.
-At the same time, AI exposed a limitation in my own ability to specify and inspect technical systems. My master prompt explicitly prohibited Gemini API calls, @google/genai, API-key handling and outside services. However, the generated repository initially contained an .env.example with GEMINI_API_KEY documentation and a Gemini dependency even though the application made no model calls. I only discovered this when I deliberately searched the repository beyond the application code. I subsequently removed those leftovers.
+At the same time, AI exposed a limitation in my own ability to specify and inspect technical systems. My master prompt explicitly prohibited Gemini API calls, ```google/genai```, API-key handling and outside services. However, the generated repository initially contained an ```.env.example``` with ```GEMINI_API_KEY``` documentation and a Gemini dependency even though the application made no model calls. I only discovered this when I deliberately searched the repository beyond the application code. I subsequently removed those leftovers.
 This showed me that a guardrail is only as strong as my understanding of what needs to be guarded. As a non-programmer, I can state what I do not want, but I may not yet know every technical place where an unwanted capability can appear.
 
 ## 3. Where did YOU exercise judgment?
