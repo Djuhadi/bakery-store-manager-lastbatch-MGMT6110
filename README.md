@@ -29,17 +29,9 @@ A closing-time markdown tool for bakery store managers.
 
 ---
 
-## Scope
-
-Front end only. Every name, number, price and date in this app is invented and lives in a single data file (`src/data.ts`).
-
-There is no database, no login, no user accounts and no analytics. The app makes no calls to Gemini or any other model, and no calls to any outside service. No real company's name, logo or trademark appears anywhere in it.
-
----
-
-## How it was built
-
-Specified and built in Google AI Studio using an R·G·O·G·C master prompt, version-controlled here, and deployed on Vercel.
+## Submission files
+PROMPTS.md — every prompt sent, in order, with what came back and what changed next and why.
+REFLECTION.md — the five reflection questions, answered about this build.
 
 - **[`PROMPTS.md`](PROMPTS.md)** — every prompt sent, in order, with what came back and what changed next and why.
 - **[`REFLECTION.md`](REFLECTION.md)** — the five reflection questions, answered about this build.
