@@ -1,0 +1,251 @@
+import { BakeryItem, DayWasteRecord, PulledProductRanking } from './types';
+
+/**
+ * All initial invented values for LastBatch bakery closing and weekly waste.
+ * Contains 14 items across 4 categories sorted by bake time (earliest baked first).
+ */
+
+export const INITIAL_CLOSING_ITEMS: BakeryItem[] = [
+  {
+    id: 'item-1',
+    name: 'Country Sourdough Batard',
+    category: 'Hearth & Sourdough',
+    bakedAt: '5:15 AM',
+    bakeMinutes: 315, // 5 * 60 + 15
+    quantityLeft: 4,
+    fullPrice: 8.50,
+  },
+  {
+    id: 'item-2',
+    name: 'Traditional Baguette',
+    category: 'Hearth & Sourdough',
+    bakedAt: '5:30 AM',
+    bakeMinutes: 330,
+    quantityLeft: 6,
+    fullPrice: 4.25,
+  },
+  {
+    id: 'item-3',
+    name: 'Almond Frangipane Croissant',
+    category: 'Pastries & Viennoiserie',
+    bakedAt: '5:45 AM',
+    bakeMinutes: 345,
+    quantityLeft: 3,
+    fullPrice: 5.75,
+  },
+  {
+    id: 'item-4',
+    name: 'Cardamom Morning Bun',
+    category: 'Pastries & Viennoiserie',
+    bakedAt: '6:00 AM',
+    bakeMinutes: 360,
+    quantityLeft: 5,
+    fullPrice: 4.75,
+  },
+  {
+    id: 'item-5',
+    name: 'Cheddar Chive Buttermilk Scone',
+    category: 'Savory & Lunch',
+    bakedAt: '6:15 AM',
+    bakeMinutes: 375,
+    quantityLeft: 7,
+    fullPrice: 4.50,
+  },
+  {
+    id: 'item-6',
+    name: 'Seeded Rye Loaf',
+    category: 'Hearth & Sourdough',
+    bakedAt: '6:45 AM',
+    bakeMinutes: 405,
+    quantityLeft: 2,
+    fullPrice: 9.00,
+  },
+  {
+    id: 'item-7',
+    name: 'Ham & Gruyère Croissant',
+    category: 'Savory & Lunch',
+    bakedAt: '7:15 AM',
+    bakeMinutes: 435,
+    quantityLeft: 4,
+    fullPrice: 6.95,
+  },
+  {
+    id: 'item-8',
+    name: 'Valrhona Chocolate Babka Slice',
+    category: 'Sweets & Cakes',
+    bakedAt: '7:45 AM',
+    bakeMinutes: 465,
+    quantityLeft: 5,
+    fullPrice: 5.25,
+  },
+  {
+    id: 'item-9',
+    name: 'Pain au Chocolat',
+    category: 'Pastries & Viennoiserie',
+    bakedAt: '8:30 AM',
+    bakeMinutes: 510,
+    quantityLeft: 6,
+    fullPrice: 4.95,
+  },
+  {
+    id: 'item-10',
+    name: 'Spinach & Feta Danish',
+    category: 'Savory & Lunch',
+    bakedAt: '9:15 AM',
+    bakeMinutes: 555,
+    quantityLeft: 3,
+    fullPrice: 5.50,
+  },
+  {
+    id: 'item-11',
+    name: 'Rosemary Olive Focaccia Square',
+    category: 'Hearth & Sourdough',
+    bakedAt: '10:00 AM',
+    bakeMinutes: 600,
+    quantityLeft: 8,
+    fullPrice: 5.00,
+  },
+  {
+    id: 'item-12',
+    name: 'Lemon Poppyseed Loaf Slice',
+    category: 'Sweets & Cakes',
+    bakedAt: '10:45 AM',
+    bakeMinutes: 645,
+    quantityLeft: 4,
+    fullPrice: 4.25,
+  },
+  {
+    id: 'item-13',
+    name: 'Salted Caramel Pecan Tart',
+    category: 'Sweets & Cakes',
+    bakedAt: '11:30 AM',
+    bakeMinutes: 690,
+    quantityLeft: 2,
+    fullPrice: 6.50,
+  },
+  {
+    id: 'item-14',
+    name: 'Blueberry Streusel Muffin',
+    category: 'Sweets & Cakes',
+    bakedAt: '12:15 PM',
+    bakeMinutes: 735,
+    quantityLeft: 5,
+    fullPrice: 3.95,
+  },
+];
+
+/**
+ * Historical records for the last 7 days (Monday through Sunday prior to today).
+ */
+export const LAST_SEVEN_DAYS_WASTE: DayWasteRecord[] = [
+  {
+    id: 'day-7',
+    dayLabel: 'Monday',
+    dateStr: 'Sep 7',
+    markedDownCount: 18,
+    pulledCount: 11,
+    moneyLost: 84.50,
+  },
+  {
+    id: 'day-6',
+    dayLabel: 'Sunday',
+    dateStr: 'Sep 6',
+    markedDownCount: 22,
+    pulledCount: 14,
+    moneyLost: 102.75,
+  },
+  {
+    id: 'day-5',
+    dayLabel: 'Saturday',
+    dateStr: 'Sep 5',
+    markedDownCount: 19,
+    pulledCount: 9,
+    moneyLost: 68.20,
+  },
+  {
+    id: 'day-4',
+    dayLabel: 'Friday',
+    dateStr: 'Sep 4',
+    markedDownCount: 14,
+    pulledCount: 12,
+    moneyLost: 89.00,
+  },
+  {
+    id: 'day-3',
+    dayLabel: 'Thursday',
+    dateStr: 'Sep 3',
+    markedDownCount: 16,
+    pulledCount: 8,
+    moneyLost: 59.40,
+  },
+  {
+    id: 'day-2',
+    dayLabel: 'Wednesday',
+    dateStr: 'Sep 2',
+    markedDownCount: 13,
+    pulledCount: 10,
+    moneyLost: 74.80,
+  },
+  {
+    id: 'day-1',
+    dayLabel: 'Tuesday',
+    dateStr: 'Sep 1',
+    markedDownCount: 15,
+    pulledCount: 13,
+    moneyLost: 96.10,
+  },
+];
+
+/**
+ * Products pulled most often over the last 7 days, worst first (highest pulled count first).
+ */
+export const MOST_PULLED_PRODUCTS: PulledProductRanking[] = [
+  {
+    id: 'rank-1',
+    name: 'Ham & Gruyère Croissant',
+    category: 'Savory & Lunch',
+    timesPulled: 6,
+    unitsPulled: 19,
+    estimatedLoss: 132.05,
+  },
+  {
+    id: 'rank-2',
+    name: 'Rosemary Olive Focaccia',
+    category: 'Hearth & Sourdough',
+    timesPulled: 5,
+    unitsPulled: 16,
+    estimatedLoss: 80.00,
+  },
+  {
+    id: 'rank-3',
+    name: 'Almond Frangipane Croissant',
+    category: 'Pastries & Viennoiserie',
+    timesPulled: 5,
+    unitsPulled: 14,
+    estimatedLoss: 80.50,
+  },
+  {
+    id: 'rank-4',
+    name: 'Spinach & Feta Danish',
+    category: 'Savory & Lunch',
+    timesPulled: 4,
+    unitsPulled: 11,
+    estimatedLoss: 60.50,
+  },
+  {
+    id: 'rank-5',
+    name: 'Country Sourdough Batard',
+    category: 'Hearth & Sourdough',
+    timesPulled: 3,
+    unitsPulled: 9,
+    estimatedLoss: 76.50,
+  },
+  {
+    id: 'rank-6',
+    name: 'Lemon Poppyseed Loaf Slice',
+    category: 'Sweets & Cakes',
+    timesPulled: 3,
+    unitsPulled: 8,
+    estimatedLoss: 34.00,
+  },
+];

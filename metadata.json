@@ -1,0 +1,6 @@
+{
+  "name": "LastBatch",
+  "description": "Bakery closing list and markdown manager for neighborhood store managers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
