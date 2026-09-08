@@ -1,4 +1,4 @@
-# PROMPTS.md — LastBatch
+# REFLECTION.md — LastBatch
  **Student:** Isabella Karunia Djuhadi · **Course:** MGMT6110 · **Problem Set 1**  
 
 --- 
