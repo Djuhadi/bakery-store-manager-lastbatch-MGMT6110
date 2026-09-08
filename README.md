@@ -2,8 +2,8 @@
 
 A closing-time markdown tool for bakery store managers.
 
-**Student:** Isabella Djuhadi  
-**Course:** MGMT 6110 · Human-AI Collaboration · AY2026/27 August Term  
+**Student:** Isabella Karunia Djuhadi  
+**Course:** MGMT6110 · Human-AI Collaboration · AY2026/27 August Term  
 **Assignment:** Problem Set 1 — Build the front end of your product  
 **Live app:** https://bakery-store-manager-lastbatch-mgmt-umber.vercel.app/
 
