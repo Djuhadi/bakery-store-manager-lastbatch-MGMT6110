@@ -1,8 +1,7 @@
 # PROMPTS.md — LastBatch
+ **Student:** Isabella Karunia Djuhadi · **Course:** MGMT6110 · **Problem Set 1**  
 
-## **Student:** Isabella Djuhadi · **Course:** MGMT 6110 · **Problem Set 1**  
-
-
+--- 
 ## 1. Who are your users, and what changes for them?
 The user of LastBatch is a bakery store manager working the closing shift at a small chain of around forty neighbourhood shops. This is an internal user whose existing work is being augmented: the manager is responsible for the fresh-food markdown and waste decision at the end of each trading day. At around 5 PM, the manager currently walks the shelves and decides from memory whether each unsold item should receive a 20% discount, a 50% discount, or be pulled. There is no record of those decisions or their cost.
 LastBatch changes this by replacing the memory-based shelf walk with a structured closing list. Items are ordered by bake time, the manager makes one of three decisions for each item, and an undecided counter shows when the job is complete. The second screen then turns those decisions into a seven-day view of markdowns, pulls and money lost, giving the manager an input for deciding what to bake less of. The product therefore does not replace the manager's judgment; it structures and records it.
