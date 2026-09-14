@@ -82,6 +82,36 @@ export default function App() {
             />
           </main>
         )}
+
+        {/* Footer with data.gov.sg license attribution */}
+        <footer
+          id="app-footer"
+          className="mt-auto py-3 px-4 border-t border-stone-200/80 bg-stone-100 text-[11px] text-stone-500 text-center leading-relaxed"
+        >
+          <p>
+            Contains information from{' '}
+            <span className="font-semibold text-stone-600">2-Hour Weather Forecast</span> accessed
+            via{' '}
+            <a
+              href="https://data.gov.sg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-stone-800"
+            >
+              data.gov.sg
+            </a>
+            , made available under the terms of the{' '}
+            <a
+              href="https://data.gov.sg/open-data-licence"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-stone-800"
+            >
+              Singapore Open Data Licence version 1.0
+            </a>
+            .
+          </p>
+        </footer>
       </div>
     </div>
   );

@@ -29,3 +29,10 @@ export interface PulledProductRanking {
   unitsPulled: number; // total units pulled
   estimatedLoss: number; // in dollars
 }
+
+export interface ForecastResponse {
+  area: string;
+  forecast: string | null;
+  validPeriod: string;
+  fetchedAt: string;
+}

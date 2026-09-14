@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { BakeryItem, DecisionType } from '../types';
 import { ClosingItemCard } from './ClosingItemCard';
 import { DecidedItemRow } from './DecidedItemRow';
+import { WeatherStrip } from './WeatherStrip';
 import { CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
@@ -108,6 +109,9 @@ export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
           </button>
         </div>
       )}
+
+      {/* Closing-hour weather conditions strip for City area */}
+      <WeatherStrip />
 
       {/* Main List Area */}
       {undecidedCount > 0 ? (
