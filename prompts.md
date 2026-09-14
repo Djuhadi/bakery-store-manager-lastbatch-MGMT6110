@@ -168,3 +168,10 @@ CONTEXT: Deployed on Vercel from GitHub. A real response from the endpoint, call
   }]
 },"errorMsg":""}
 ```
+
+**What came back:** Both functions at api/ in the project root, plus a WeatherStrip component above the item list. Real data on the screen: CITY · Partly Cloudy (Night)· 4.00 am to 6.00 am. The four states I specified were implemented with my exact sentences. There was no server file to register routes in, so it configured Vite dev middleware in vite.config.ts instead and told me so rather than inventing one.
+
+It also added a fifth state I never asked for. On success the strip reads "Fair conditions: steady closing foot traffic expected for evening markdowns." I specified loading, empty, refused and unreachable — I never said what the strip says when it works, so the agent decided. And the decision it made is a claim my product cannot support: it turned a 4 a.m. "Partly Cloudy (Night)" reading into a confident statement about evening foot traffic. Weather-to-footfall is a business judgement about my user's shop, not a formatting detail, and it arrived looking like code.
+
+**What I changed next and why:** 
+
