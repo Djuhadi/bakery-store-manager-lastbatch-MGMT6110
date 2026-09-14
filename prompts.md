@@ -90,3 +90,81 @@ so they stay consistent with the new daily numbers. Change nothing else.
 **What came back:** Daily pulls now 1–4. I re-added them myself rather than trusting the summary: the seven days sum to 18 pulls and $215.00, which matches the header totals exactly.
 
 **What I changed next and why:** Nothing — the two screens now describe the same shop. Pushing it was a separate problem: the live site kept showing the old numbers until I opened `src/data.ts` in the repository and saw the source had not changed either, so the push, not the deploy, was what had failed.
+
+---
+
+## Prompt 4 — Adding the Forecast Back End
+```
+ROLE: You are a senior full-stack developer working in my existing project, a Vite +
+TypeScript app called LastBatch. Do not rewrite what is already there; add to it.
+
+GOAL: My Closing List screen currently gives the manager no information about the hour
+ahead. Add a closing-hour conditions strip at the top of that screen, fed by the
+Singapore two-hour rain forecast for the area City, fetched through a serverless
+function of my own.
+  1) api/forecast.js — calls
+     https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast
+     finds the entry in data.items[0].forecasts whose area matches "City", and returns
+     only { area, forecast, validPeriod, fetchedAt }. Nothing else.
+  2) api/health.js — reports whether the upstream answered, including the HTTP status
+     it returned, and a keyConfigured field. This service needs no credential, so
+     keyConfigured is true by definition; say so in a comment rather than removing the
+     field, because my brief asks for it.
+  3) On the Closing List screen, show the forecast in a strip above the item list, and
+     decide what the manager sees in each of four cases. Use exactly these sentences:
+       loading:     "Checking the next two hours over City…"
+       empty:       "No forecast published for City right now. Decide markdowns from
+                     the shelf as usual."
+       refused:     "The weather service refused our request — no traffic guidance this
+                     hour. The list below still works."
+       unreachable: "Can't reach the weather service — no traffic guidance this hour.
+                     The list below still works."
+     In all four cases the item list below must remain fully interactive. The markdown
+     and pull actions must never be blocked or disabled by the state of the forecast.
+
+OUTPUT: Both functions at api/ in the PROJECT ROOT, siblings of package.json, never
+  inside src/. Plain .js, not .ts.
+  This project uses express. Register the same two routes in the existing server file
+  as well, so the preview can answer them. If there is no server file, say so plainly
+  rather than inventing one.
+  Return validPeriod as the human-readable valid_period.text string, and display it
+  next to the forecast so the manager can see which two hours it covers.
+  AFTER the fetch, check response.ok before reading the body. A refusal often has an
+  empty body, so calling .json() on it throws and my function dies with a 500 instead
+  of telling me what happened. On a non-2xx reply, return the upstream status and a
+  one-line reason in your own JSON.
+  If the area is not found in the response, that is the EMPTY case, not an error:
+  return 200 with forecast set to null, so my screen can tell it apart from a failure.
+  Cache with Cache-Control: s-maxage=900, stale-while-revalidate=1800. The source
+  republishes every half hour and this host allows only six calls per ten seconds from
+  one address, shared across everyone on my campus network.
+  In the footer, credit data.gov.sg in the form its licence asks for.
+
+GUARDRAILS: Never create a variable whose name starts with VITE_. Never call
+  data.gov.sg from browser code; the page talks only to /api/forecast. No new npm
+  packages. No database, no login. Leave the Closing List and This Week screens working
+  exactly as they are, including the undo behaviour and the completion state.
+
+CONTEXT: Deployed on Vercel from GitHub. A real response from the endpoint, called by
+  hand just now, looks like this:
+
+{"code":0,"data":{
+  "area_metadata":[
+    {"name":"City","label_location":{"latitude":1.292,"longitude":103.844}}
+  ],
+  "items":[{
+    "update_timestamp":"2026-09-15T04:06:46+08:00",
+    "timestamp":"2026-09-15T04:00:00+08:00",
+    "valid_period":{
+      "start":"2026-09-15T04:00:00+08:00",
+      "end":"2026-09-15T06:00:00+08:00",
+      "text":"4.00 am to 6.00 am"
+    },
+    "forecasts":[
+      {"area":"Ang Mo Kio","forecast":"Partly Cloudy (Night)"},
+      {"area":"City","forecast":"Partly Cloudy (Night)"},
+      {"area":"Tampines","forecast":"Partly Cloudy (Night)"}
+    ]
+  }]
+},"errorMsg":""}
+```
