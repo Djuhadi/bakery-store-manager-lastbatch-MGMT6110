@@ -15,16 +15,21 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-30 bg-stone-900 text-stone-100 shadow-md border-b border-stone-800">
       <div className="max-w-md mx-auto px-4 pt-3 pb-2">
         {/* Top row: Brand & Context */}
-        <div className="flex items-center justify-between mb-2.5">
-          <div className="flex items-baseline gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-amber-400 font-serif">
-              LastBatch
-            </h1>
-            <span className="text-xs font-medium text-stone-400">
-              Shop #14 · Mill & Elm
-            </span>
+        <div className="flex items-start justify-between gap-2 mb-2.5">
+          <div>
+            <div className="flex items-baseline gap-2">
+              <h1 className="text-xl font-bold tracking-tight text-amber-400 font-serif">
+                LastBatch
+              </h1>
+              <span className="text-xs font-medium text-stone-400">
+                Shop #14 · Mill & Elm
+              </span>
+            </div>
+            <p className="text-[11px] text-stone-400 mt-0.5">
+              Decide markdowns on unsold stock before closing.
+            </p>
           </div>
-          <div className="text-xs font-semibold px-2.5 py-1 rounded bg-stone-800 text-stone-300 border border-stone-700">
+          <div className="text-xs font-semibold px-2.5 py-1 rounded bg-stone-800 text-stone-300 border border-stone-700 shrink-0">
             5:00 PM Walk
           </div>
         </div>

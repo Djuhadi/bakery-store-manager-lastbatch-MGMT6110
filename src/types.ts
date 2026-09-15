@@ -35,4 +35,5 @@ export interface ForecastResponse {
   forecast: string | null;
   validPeriod: string;
   fetchedAt: string;
+  areas?: string[];
 }

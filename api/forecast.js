@@ -1,10 +1,12 @@
 /**
- * Serverless function for Singapore 2-hour weather forecast for "City" area.
+ * Serverless function for Singapore 2-hour weather forecast.
  * Upstream: data.gov.sg
  * Cache-Control: s-maxage=900, stale-while-revalidate=1800 (15 min cache, 30 min stale)
+ * Accepts optional ?area= query parameter (defaults to "City").
+ * Returns { area, forecast, validPeriod, fetchedAt, areas }.
  */
 export default async function handler(req, res) {
-  // Set required caching headers for shared campus network rate limits
+  // Set required caching headers for shared campus network rate limits. Cached per area URL.
   res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=1800');
   res.setHeader('Content-Type', 'application/json');
 
@@ -20,6 +22,22 @@ export default async function handler(req, res) {
       res.end(JSON.stringify(payload));
     }
   };
+
+  // Parse optional ?area= query parameter, defaulting to "City" when absent
+  let requestedArea = 'City';
+  if (req.query && req.query.area) {
+    requestedArea = req.query.area;
+  } else if (req.url) {
+    try {
+      const parsedUrl = new URL(req.url, 'http://localhost');
+      const param = parsedUrl.searchParams.get('area');
+      if (param && param.trim()) {
+        requestedArea = param.trim();
+      }
+    } catch {
+      // ignore URL parse errors and fall back to default
+    }
+  }
 
   try {
     const upstreamRes = await fetch(
@@ -38,29 +56,39 @@ export default async function handler(req, res) {
     const data = await upstreamRes.json();
     const item = data?.data?.items?.[0];
     const validPeriod = item?.valid_period?.text || '';
-    const cityForecast = item?.forecasts?.find(
-      (f) => f.area && f.area.trim().toLowerCase() === 'city'
+
+    // Extract full list of area names from data.area_metadata
+    const areas = (data?.data?.area_metadata || [])
+      .map((a) => a.name)
+      .filter(Boolean);
+
+    // Match requested area case-insensitively against data.items[0].forecasts
+    const targetAreaTrimmed = requestedArea.trim().toLowerCase();
+    const matchedForecast = item?.forecasts?.find(
+      (f) => f.area && f.area.trim().toLowerCase() === targetAreaTrimmed
     );
 
     const fetchedAt = new Date().toISOString();
 
-    // If the area is not found in the response, that is the EMPTY case, not an error:
-    // return 200 with forecast set to null, so the screen can tell it apart from a failure.
-    if (!cityForecast) {
+    // If the chosen area is not found in the response, that is still the EMPTY case:
+    // return 200 with forecast null, so the screen can tell it apart from a failure.
+    if (!matchedForecast) {
       return send(200, {
-        area: 'City',
+        area: requestedArea,
         forecast: null,
         validPeriod,
         fetchedAt,
+        areas,
       });
     }
 
-    // Returns only { area, forecast, validPeriod, fetchedAt }. Nothing else.
+    // Returns { area, forecast, validPeriod, fetchedAt, areas }
     return send(200, {
-      area: cityForecast.area,
-      forecast: cityForecast.forecast,
+      area: matchedForecast.area,
+      forecast: matchedForecast.forecast,
       validPeriod,
       fetchedAt,
+      areas,
     });
   } catch (err) {
     return send(502, {
@@ -70,3 +98,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
