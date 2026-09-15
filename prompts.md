@@ -1,6 +1,6 @@
 # PROMPTS.md — LastBatch
 
-**Student:** Isabella Karunia Djuhadi · **Course:** MGMT 6110 · **Problem Set 1 and 2**  
+**Student:** Isabella Karunia Djuhadi · **Course:** MGMT6110 · **Problem Set 1 and 2**  
 **User sentence:** A bakery store manager opens this screen at 5 PM, an hour before closing, to decide which unsold items to mark down and which to pull, and knows it worked when every item on the list has a decision and the list is empty.  
 **Live link:** https://bakery-store-manager-lastbatch-mgmt-umber.vercel.app/
 
