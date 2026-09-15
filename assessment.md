@@ -1,6 +1,6 @@
 # assessment.md — LastBatch
 
-**Student:** Isabella Karunia Djuhadi · **Course:** MGMT 6110 · **Problem Set 2**
+**Student:** Isabella Karunia Djuhadi · **Course:** MGMT6110 · **Problem Set 2**
 
 LastBatch is a closing-time markdown tool for bakery store managers. The user I carried over from Problem Set 1 is a bakery store manager working at one of around forty neighbourhood shops. At around 5 PM, an hour before closing, the manager walks the shelves and decides which unsold items should receive a 20% discount, a 50% discount, or be pulled. The front end structures that decision as a closing list, while the second screen records the week's markdowns, pulls and money lost.
 
