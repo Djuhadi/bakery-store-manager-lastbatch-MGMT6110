@@ -169,9 +169,81 @@ CONTEXT: Deployed on Vercel from GitHub. A real response from the endpoint, call
 },"errorMsg":""}
 ```
 
-**What came back:** Both functions at api/ in the project root, plus a WeatherStrip component above the item list. Real data on the screen: CITY · Partly Cloudy (Night)· 4.00 am to 6.00 am. The four states I specified were implemented with my exact sentences. There was no server file to register routes in, so it configured Vite dev middleware in vite.config.ts instead and told me so rather than inventing one.
+**What came back:** Both functions at api/ in the project root, plus a new WeatherStrip component above the item list. Real data on screen within a minute: CITY · Partly Cloudy (Night) · 4.00 am to 6.00 am. The four states were implemented with my exact sentences. It told me plainly that there was no server file to register routes in and configured Vite dev middleware instead, rather than inventing one — which is what I had asked for, but I noticed I only asked because I had been warned to.
 
-It also added a fifth state I never asked for. On success the strip reads "Fair conditions: steady closing foot traffic expected for evening markdowns." I specified loading, empty, refused and unreachable — I never said what the strip says when it works, so the agent decided. And the decision it made is a claim my product cannot support: it turned a 4 a.m. "Partly Cloudy (Night)" reading into a confident statement about evening foot traffic. Weather-to-footfall is a business judgement about my user's shop, not a formatting detail, and it arrived looking like code.
+It also added a fifth state I never specified. On success the strip read "Fair conditions: steady closing foot traffic expected for evening markdowns", and on rain, "Rain forecast: evening walk-in foot traffic likely slower. Consider 50% markdowns earlier." I had specified loading, empty, refused and unreachable. I never said what the strip says when it works, so the agent decided — and what it decided was a claim my product cannot support. It turned a 4 a.m. "Partly Cloudy (Night)" reading into a statement about evening foot traffic, and in the rain case into a specific pricing instruction. Weather-to-footfall is a judgement about my user's business. It arrived looking like formatting.
 
-**What I changed next and why:** 
+**What I changed next and why:** I deleted the getTrafficGuidance function and the element that rendered it, by hand rather than by prompt. The strip now shows the area, the forecast and the valid period, and stops. The manager reads the sky and makes the call, which is their job. I kept the weather icon, because matching an icon to a weather word is presentation, not a claim.
+
+---
+
+## Hand edits after Prompt 4 — where I stopped prompting
+
+Four changes I made directly in the editor rather than by asking. Three of them were cases where the code looked correct and was not.
+
+1. **forecast.js, the unreachable status: 503 → 502.** The agent returned 503 when the fetch threw. But line 32 also passes the upstream's own status straight through, so if data.gov.sg ever answered 503, my function would return 503 for two different situations — provider refused us, and provider unreachable. Those are two of my four required sentences, and the screen would not have been able to tell them apart.
+
+2. **WeatherStrip.tsx, how the state is chosen.** It inferred from a range: 400–499 means refused, anything else unreachable. I replaced it with an explicit check for 502, the code my own function returns when the fetch throws. The old version would have called a real 503 from data.gov.sg "unreachable", which is wrong — they answered, they refused.
+
+3. **WeatherStrip.tsx, deleted the invented guidance** (see Prompt 4 above).
+
+4. **WeatherStrip.tsx, `body?.upstreamStatus || res.status` → `res.status`.** This one worked, but by coincidence. On the unreachable path my function sends upstreamStatus: null, and `||` skips null, falling through to res.status, which happened to also be 502. Two separate things being 502 made it look correct. If
+   either had changed, it would have failed silently. I read my own status directly instead.
+
+None of these produced an error. All four would have passed a casual look at the screen.
+
+---
+
+## Prompt 5 — Header subtext
+
+```
+In the Closing List header, under "LastBatch · Shop #14 · Mill & Elm", add one line
+of subtext in a smaller, muted style: "Decide markdowns on unsold stock before closing."
+Change nothing else — no layout changes, no other copy, and leave the tab bar,
+the counter and the item list exactly as they are.
+```
+
+**What came back:** One line added to Header.tsx at 11px in muted stone-400, nothing else touched, as asked.
+
+**What I changed next and why:** Nothing. I sent this prompt because I had assessed my own front end against the criterion "can a stranger tell within a few seconds what this is for" and failed it: the header said "LastBatch · Shop #14 · Mill & Elm" and nothing explained the job. The fix took one prompt. The finding was the useful part, not the fix.
+
+---
+
+## Prompt 6 — Area picker
+
+```
+ROLE: Senior full-stack developer in my existing LastBatch project. Add to what is
+there; do not rewrite it.
+
+GOAL: api/forecast.js currently hardcodes the area "City". Let the manager choose which
+of the 47 forecast areas their shop sits in.
+  1) api/forecast.js should accept an optional ?area= query parameter, defaulting to
+     "City" when absent. Match it case-insensitively against data.items[0].forecasts.
+     Also return the full list of area names from data.area_metadata as an "areas"
+     array, so the screen does not need a second call.
+  2) In the weather strip, add a small dropdown listing those area names, defaulting
+     to City. Changing it refetches /api/forecast?area=<chosen>.
+  3) Remember the choice in localStorage so the manager sets it once, not every
+     closing shift.
+
+OUTPUT: If the chosen area is not found in the response, that is still the EMPTY case:
+  return 200 with forecast null, and the screen shows "No forecast published for
+  [area] right now. Decide markdowns from the shelf as usual." with the area name
+  substituted. The dropdown must stay usable in every state, including when the
+  forecast failed, so the manager can try a different area.
+  Keep the existing Cache-Control header. Cache per area, not globally.
+
+GUARDRAILS: Do not add any sentence interpreting the weather or recommending a
+  markdown. Show the area, the forecast and the valid period only. No new npm packages.
+  Leave the item list, the counter, the undo behaviour and the This Week screen exactly
+  as they are.
+```
+
+**What came back:** ?area= parameter with City as the default, case-insensitive matching, the 47 area names returned in the same response so the screen needs no second call, and the choice remembered in localStorage. Empty state substitutes the chosen area name into the sentence. The dropdown stays usable in every state.
+
+**What I changed next and why:** Nothing by hand. This prompt carried an explicit guardrail — "Do not add any sentence interpreting the weather or recommending a markdown" — written because of what happened in Prompt 4. This time no interpretive copy appeared. The guardrail was the whole difference between the two prompts.
+
+I also sent this prompt for a product reason rather than a technical one: the function had hardcoded "City", so a manager whose shop is in Tampines was being shown a forecast for somewhere else. The screen was making a claim it could not fully support.
+
+
 
