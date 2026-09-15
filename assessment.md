@@ -1,4 +1,4 @@
-# assessment.md — LastBatch
+# assessment.md — Last Batch
 
 **Student:** Isabella Karunia Djuhadi · **Course:** MGMT6110 · **Problem Set 2**
 
