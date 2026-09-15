@@ -10,7 +10,7 @@ Problem Set 2 added something that the first version could not do: use a real so
 
 ## Part 1 — Criteria for a good front end
 
-### F1 · A stranger knows what this is for before reading anything
+### F1. A stranger knows what this is for before reading anything
 
 **Why it matters to my user.** Managers are given this tool by the chain rather than choosing it themselves. They are also using it during a busy closing shift, so the purpose of the screen should be clear immediately. If the manager has to be trained before understanding what the screen is for, the product has already created friction.
 
@@ -22,7 +22,7 @@ Problem Set 2 added something that the first version could not do: use a real so
 
 ---
 
-### F2 · The one job is reachable without instruction
+### F2. The one job is reachable without instruction
 
 **Why it matters to my user.** The main job is to give every unsold item a decision before closing. The manager should not have to work out how to record that decision or remember what has already been handled.
 
@@ -34,7 +34,7 @@ Problem Set 2 added something that the first version could not do: use a real so
 
 ---
 
-### F3 · Every claim on the screen is one the product can support
+### F3. Every claim on the screen is one the product can support
 
 **Why it matters to my user.** The manager is making a decision about real stock and money. If a quantity, bake time or price is wrong, the resulting markdown decision can also be wrong.
 
@@ -48,7 +48,7 @@ What I changed in this problem set was the part I could actually source: the wea
 
 ---
 
-### F4 · The screen works on the device it is actually used on
+### F4. The screen works on the device it is actually used on
 
 **Why it matters to my user.** The manager is standing on the shop floor rather than sitting at a desk. The product therefore needs to work on a phone, where the manager can move between the screen and the shelves.
 
@@ -60,7 +60,7 @@ What I changed in this problem set was the part I could actually source: the wea
 
 ---
 
-### F5 · The most likely mistake has a way back
+### F5. The most likely mistake has a way back
 
 **Why it matters to my user.** The manager is making repeated decisions quickly, and the three actions are close together. Choosing 50% off instead of 20% off, or pulling an item by mistake, is easy to imagine and has a direct financial consequence.
 
@@ -74,7 +74,7 @@ What I changed in this problem set was the part I could actually source: the wea
 
 ## Part 2 — Criteria for a good back end
 
-### B1 · The screen says four different things, not one
+### B1. The screen says four different things, not one
 
 **Why it matters to my user.** A real external service can be successful, empty, refused or unreachable. These situations require different responses. A manager needs to know whether there is simply no forecast, whether the service refused the request, or whether the service cannot be reached.
 
@@ -88,7 +88,7 @@ The refused state is implemented, but I could not trigger a genuine refusal beca
 
 ---
 
-### B2 · Somebody who is not me can tell whether the service is up
+### B2. Somebody who is not me can tell whether the service is up
 
 **Why it matters to my user.** When the weather strip does not work, someone needs to distinguish between a problem with the product and a problem with the upstream service. This is useful both for the manager and for someone helping maintain the product.
 
@@ -102,7 +102,7 @@ I marked this partly met because the endpoint is not discoverable from the produ
 
 ---
 
-### B3 · The credential is unreachable from the page and absent from the repository
+### B3. The credential is unreachable from the page and absent from the repository
 
 **Why it matters to my user.** A credential leak would create a security problem beyond the product itself. The safest implementation is one where the browser never has access to the credential.
 
@@ -116,7 +116,7 @@ This is different from proving that I can securely manage a real secret. I avoid
 
 ---
 
-### B4 · The product asks the source no more often than the source changes
+### B4. The product asks the source no more often than the source changes
 
 **Why it matters to my user.** The two-hour forecast is updated roughly every half hour, while the data.gov.sg service also has request limits. Fetching the source every time the page renders would be unnecessary and could make the product less reliable.
 
@@ -130,7 +130,7 @@ I did not add equivalent caching to `health.js`. That endpoint is intended to ch
 
 ---
 
-### B5 · A failure produces a sentence the manager can act on, and never blocks the job
+### B5. A failure produces a sentence the manager can act on, and never blocks the job
 
 **Why it matters to my user.** The weather forecast is an additional input, not the purpose of LastBatch. If the weather service fails, the manager must still be able to decide what to do with the unsold stock.
 
@@ -146,7 +146,7 @@ I explicitly included this requirement in the back-end prompt instead of assumin
 
 ## Part 3 — The six questions
 
-### Q1 · Where did the agent make me faster, and by how much?
+### Q1. Where did the agent make me faster, and by how much?
 
 The biggest time saving came from building the serverless functions. `forecast.js` and `health.js` came back as working functions within minutes, including the API call, response checking, error handling and cache headers. As someone who had not previously written a serverless function, I would have needed to spend a large part of the evening learning how the request, response and deployment structure worked before I could have produced the same result manually.
 
@@ -156,7 +156,7 @@ The opposite was also true for small changes. The four manual edits recorded in 
 
 ---
 
-### Q2 · Where did it cost me time, and whose fault was that?
+### Q2. Where did it cost me time, and whose fault was that?
 
 The biggest time loss came from the GitHub push rather than from the back-end code itself. The sync panel reported that GitHub and Google AI Studio were in sync, but the repository did not actually contain the expected changes. I initially trusted the status message and spent time refreshing, checking the repository and checking whether the deployment was broken before realising that the destination itself was the thing I needed to verify.
 
@@ -166,7 +166,7 @@ The lesson is similar to what happened with the generated weather guidance: I sh
 
 ---
 
-### Q3 · Did it ever hand me something that looked right and was not?
+### Q3. Did it ever hand me something that looked right and was not?
 
 Yes. The clearest example was the successful weather state.
 
@@ -182,7 +182,7 @@ This took me longer to notice than a normal coding error would have, because not
 
 ---
 
-### Q4 · What did I have to know in order to supervise it?
+### Q4. What did I have to know in order to supervise it?
 
 To catch the mistake in Q3, I needed to know what the actual data source provided. I had opened the data.gov.sg endpoint myself before asking the agent to build the back end, so I knew that the response contained a forecast phrase, an area and a valid period. There was nothing in the response about customer traffic, bakery sales or recommended markdown percentages.
 
@@ -196,7 +196,7 @@ There are also things I still do not know well enough to supervise confidently. 
 
 ---
 
-### Q5 · Which decisions did I keep, and should I have kept more or fewer?
+### Q5. Which decisions did I keep, and should I have kept more or fewer?
 
 The main decisions that stayed with me were decisions about the product rather than the code. I decided that LastBatch is for a closing-shift bakery manager making markdown decisions. I decided that the two-hour weather forecast was relevant because it matches the period immediately after the manager's closing-time decision. I decided to use the Singapore public data source rather than introduce a separate global weather service, and I decided that the weather should remain advisory rather than tell the manager what markdown to apply.
 
@@ -210,7 +210,7 @@ The more important issue was a decision I did not realise I was making. The agen
 
 ---
 
-### Q6 · What does this mean for a team of thirty?
+### Q6. What does this mean for a team of thirty?
 
 The main lesson I would carry to a larger team is that AI-assisted development needs a review of what the product says, not only whether the code works. My weather example did not create an error, but it introduced a business claim that nobody had explicitly decided to make. On a team of thirty, the person who writes the prompt may not be the person who sees the final output, so this kind of decision could easily pass through the system unnoticed.
 
