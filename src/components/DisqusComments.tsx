@@ -45,7 +45,10 @@ export const DisqusComments: React.FC = () => {
       <p className="text-sm text-stone-700 mb-3">
         Tried LastBatch? Tell us what worked for you and what did not.
       </p>
-      <div id="disqus_thread" />
+            <div
+        id="disqus_thread"
+        style={{ color: '#1c1917', backgroundColor: '#fafaf9' }}
+      />
     </section>
   );
 };
