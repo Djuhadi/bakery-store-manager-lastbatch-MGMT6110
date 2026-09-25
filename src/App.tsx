@@ -4,6 +4,7 @@ import { INITIAL_CLOSING_ITEMS, LAST_SEVEN_DAYS_WASTE, MOST_PULLED_PRODUCTS } fr
 import { Header } from './components/Header';
 import { ClosingListScreen } from './components/ClosingListScreen';
 import { ThisWeekScreen } from './components/ThisWeekScreen';
+import { DisqusComments } from './components/DisqusComments';
 
 export default function App() {
   const [items, setItems] = useState<BakeryItem[]>(INITIAL_CLOSING_ITEMS);
@@ -70,6 +71,8 @@ export default function App() {
               onUndo={handleUndo}
               lastActionItem={lastActionItem}
             />
+                        {/* Disqus feedback thread: main page only */}
+            <DisqusComments />
           </main>
         )}
 
