@@ -6,7 +6,7 @@ Student: Isabella Karunia Djuhadi
 
 Course: MGMT6110 · Human-AI Collaboration · AY2026/27 August Term
 
-Assignment: Problem Set 2 — Add a real back end and document the Human-AI collaboration
+Assignment: Problem Set Weekly Assignment
 
 Live app: https://bakery-store-manager-lastbatch-mgmt-umber.vercel.app/
 
