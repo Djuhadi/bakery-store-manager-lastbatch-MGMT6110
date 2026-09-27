@@ -1,11 +1,12 @@
 # PROMPTS.md — LastBatch
 
-**Student:** Isabella Karunia Djuhadi · **Course:** MGMT6110 · **Problem Set 1 and 2**  
+**Student:** Isabella Karunia Djuhadi · **Course:** MGMT6110 · **Problem Set 1-4**  
 **User sentence:** A bakery store manager opens this screen at 5 PM, an hour before closing, to decide which unsold items to mark down and which to pull, and knows it worked when every item on the list has a decision and the list is empty.  
 **Live link:** https://bakery-store-manager-lastbatch-mgmt-umber.vercel.app/
 
 ---
 
+# Problem Set 1 — Front-end prototype
 ## Prompt 1 — the master prompt
 
 ```
@@ -93,6 +94,7 @@ so they stay consistent with the new daily numbers. Change nothing else.
 
 ---
 
+# Problem Set 2 — Forecast back end
 ## Prompt 4 — Adding the Forecast Back End
 ```
 ROLE: You are a senior full-stack developer working in my existing project, a Vite +
@@ -247,11 +249,11 @@ I also sent this prompt for a product reason rather than a technical one: the fu
 
 ---
 
-## Problem Set 3 — Disqus and Microsoft Clarity
+# Problem Set 3 — Disqus and Microsoft Clarity
 
 For this problem set I worked in a Claude chat (claude.ai) rather than my usual coding agent. I set up the Disqus and Clarity accounts myself, and Claude wrote the code, which I pasted into GitHub's web editor.
 
-### Prompt 7 — Disqus comment board
+## Prompt 7 — Disqus comment board
 
 **What I asked:** Add a Disqus comment section to the bottom of the main page only (the Closing list), using my shortname `lastbatch`, with page.url set to my live address
 and a fixed page.identifier so every comment lands in one thread. Because the Closing list and This week tabs switch without reloading, the embed must load once and use
@@ -262,7 +264,7 @@ remount, and shows one line inviting feedback. Two lines in `App.tsx` place it u
 
 **What I changed next and why:** The script downloaded, but the comment box never appeared. The browser console showed "parseColor received unparseable color: oklch(...)". My app uses Tailwind CSS v4, which writes colours in oklch, and the Disqus embed cannot parse them when it reads the page's colours. The fix was to set hex colours (#1c1917 text, #fafaf9 background) directly on the #disqus_thread container. After that, the board loaded and I posted my own comment.
 
-### Prompt 8 — Microsoft Clarity and the privacy notice
+## Prompt 8 — Microsoft Clarity and the privacy notice
 
 **What I asked:** Add my Clarity tracking code to the head of `index.html` so it runs only on my live Vercel address, and add a footer notice naming Clarity and Disqus with
 links to the Microsoft Privacy Statement, the Disqus privacy policy and the Disqus data sharing settings.
