@@ -4,6 +4,18 @@ import { CloudRain, CloudSun, Cloud, Sun, CloudLightning, Loader2, Info } from '
 
 const STORAGE_KEY = 'lastbatch_forecast_area';
 
+// Words in a data.gov.sg forecast that mean rain during the window
+const WET_WORDS = ['thunder', 'storm', 'rain', 'shower'];
+const isWetForecast = (forecast: string) =>
+  WET_WORDS.some((word) => forecast.toLowerCase().includes(word));
+
+// A two-hour forecast overlaps the 5:00 PM walk (until the 6:00 PM closing)
+// only when it is fetched between 3:00 PM and 6:00 PM.
+const forecastCoversWalk = (now: Date) => {
+  const minutes = now.getHours() * 60 + now.getMinutes();
+  return minutes >= 15 * 60 && minutes < 18 * 60;
+};
+
 const DEFAULT_AREAS = [
   'City',
   'Ang Mo Kio',
@@ -220,7 +232,7 @@ export const WeatherStrip: React.FC = () => {
         <div className="flex items-start gap-3 text-stone-600 py-0.5">
           <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <p className="text-xs text-stone-700 leading-relaxed">
-            The weather service refused our request — no traffic guidance this hour. The list below still works.
+            The weather service refused our request — no forecast this hour. The list below still works.
           </p>
         </div>
       )}
@@ -230,7 +242,7 @@ export const WeatherStrip: React.FC = () => {
         <div className="flex items-start gap-3 text-stone-600 py-0.5">
           <Info className="w-5 h-5 text-stone-400 shrink-0 mt-0.5" />
           <p className="text-xs text-stone-700 leading-relaxed">
-            Can't reach the weather service — no traffic guidance this hour. The list below still works.
+            Can't reach the weather service — no forecast this hour. The list below still works.
           </p>
         </div>
       )}
@@ -240,11 +252,30 @@ export const WeatherStrip: React.FC = () => {
         <div className="flex items-center gap-3 pt-0.5">
           {getWeatherIcon(state.data.forecast!)}
           <div className="min-w-0">
-            <span className="text-base font-black text-stone-900 leading-tight">
+            <span className="block text-base font-black text-stone-900 leading-tight">
               {state.data.forecast}
             </span>
+            {/* What the forecast means for the walk: a suggestion, never the decision */}
+            {isWetForecast(state.data.forecast!) ? (
+              <p id="weather-walk-note" className="text-xs text-blue-900 leading-snug mt-0.5">
+                <span className="font-bold">LastBatch tip:</span> rain in this window can keep
+                walk-ins away. Weigh it when choosing between 20% and 50%.
+              </p>
+            ) : (
+              <p id="weather-walk-note" className="text-xs text-stone-600 leading-snug mt-0.5">
+                No rain expected. Decide from the shelf as usual.
+              </p>
+            )}
           </div>
         </div>
+      )}
+
+      {/* Outside 3:00 to 6:00 PM, the two-hour window ends before or starts after the walk */}
+      {state.status === 'success' && !forecastCoversWalk(new Date()) && (
+        <p id="weather-window-note" className="text-xs text-stone-500 leading-snug">
+          This forecast is for right now, not for the 5:00 PM walk. The walk's forecast
+          appears from 3:00 PM.
+        </p>
       )}
     </div>
   );
