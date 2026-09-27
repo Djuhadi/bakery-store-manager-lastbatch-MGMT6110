@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BakeryItem, DecisionType } from './types';
 import { INITIAL_CLOSING_ITEMS } from './data';
+import { loadTonightsWalk, saveTonightsWalk } from './savedWalk';
 import { Header } from './components/Header';
 import { ClosingListScreen } from './components/ClosingListScreen';
 import { ThisWeekScreen } from './components/ThisWeekScreen';
 import { DisqusComments } from './components/DisqusComments';
 
 export default function App() {
-  const [items, setItems] = useState<BakeryItem[]>(INITIAL_CLOSING_ITEMS);
+  // Tonight's walk comes back after a refresh; tomorrow it starts fresh
+  const [initialWalk] = useState(() => loadTonightsWalk(INITIAL_CLOSING_ITEMS, new Date()));
+  const [items, setItems] = useState<BakeryItem[]>(initialWalk.items);
+  const [restoredCount, setRestoredCount] = useState(initialWalk.restoredCount);
   const [activeScreen, setActiveScreen] = useState<'closing' | 'weekly'>('closing');
   const [lastActionItem, setLastActionItem] = useState<BakeryItem | null>(null);
+
+  // Save every decision and undo on this device
+  useEffect(() => {
+    saveTonightsWalk(items, new Date());
+  }, [items]);
 
   // Handle a manager's decision on a shelf item
   const handleDecide = (itemId: string, decision: DecisionType) => {
@@ -49,6 +58,13 @@ export default function App() {
     }
   };
 
+  // Clear tonight's walk after the manager confirms
+  const handleStartOver = () => {
+    setItems(INITIAL_CLOSING_ITEMS);
+    setLastActionItem(null);
+    setRestoredCount(0);
+  };
+
   // Undecided items count
   const undecidedCount = items.filter((item) => !item.decision).length;
 
@@ -71,6 +87,8 @@ export default function App() {
               onDecide={handleDecide}
               onUndo={handleUndo}
               lastActionItem={lastActionItem}
+              restoredCount={restoredCount}
+              onStartOver={handleStartOver}
             />
                         {/* Disqus feedback thread: main page only */}
             <DisqusComments />

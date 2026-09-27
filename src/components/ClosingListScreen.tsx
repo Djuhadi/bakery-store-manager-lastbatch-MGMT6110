@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { BakeryItem, DecisionType } from '../types';
 import { ClosingItemCard } from './ClosingItemCard';
 import { DecidedItemRow } from './DecidedItemRow';
@@ -11,6 +11,8 @@ interface ClosingListScreenProps {
   onDecide: (itemId: string, decision: DecisionType) => void;
   onUndo: (itemId: string) => void;
   lastActionItem?: BakeryItem | null;
+  restoredCount: number; // decisions brought back from earlier tonight on this device
+  onStartOver: () => void;
 }
 
 export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
@@ -18,7 +20,11 @@ export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
   onDecide,
   onUndo,
   lastActionItem,
+  restoredCount,
+  onStartOver,
 }) => {
+  const [confirmingStartOver, setConfirmingStartOver] = useState(false);
+
   // Undecided items, sorted by bakeMinutes ascending (longest ago / earliest baked first)
   const undecidedItems = useMemo(() => {
     return items
@@ -84,6 +90,46 @@ export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
             style={{ width: `${(decidedCount / totalCount) * 100}%` }}
           />
         </div>
+
+        {/* Decisions survive a refresh; say so, and offer a way to clear the walk */}
+        {decidedCount > 0 && (
+          <div id="walk-saved-note" className="flex items-center justify-between gap-2 mt-2.5 text-xs">
+            <span className="font-semibold opacity-85">
+              {restoredCount > 0
+                ? 'Restored from earlier tonight on this device.'
+                : 'Saved on this device.'}
+            </span>
+            {confirmingStartOver ? (
+              <span className="shrink-0 flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onStartOver();
+                    setConfirmingStartOver(false);
+                  }}
+                  className="font-black underline underline-offset-2"
+                >
+                  Clear all {decidedCount} {decidedCount === 1 ? 'decision' : 'decisions'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmingStartOver(false)}
+                  className="font-semibold underline underline-offset-2 opacity-85"
+                >
+                  Cancel
+                </button>
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmingStartOver(true)}
+                className="shrink-0 font-bold underline underline-offset-2"
+              >
+                Start over
+              </button>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Quick undo notification toast if an item was just decided */}
