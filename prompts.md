@@ -245,5 +245,31 @@ GUARDRAILS: Do not add any sentence interpreting the weather or recommending a
 
 I also sent this prompt for a product reason rather than a technical one: the function had hardcoded "City", so a manager whose shop is in Tampines was being shown a forecast for somewhere else. The screen was making a claim it could not fully support.
 
+---
+
+## Problem Set 3 — Disqus and Microsoft Clarity
+
+For this problem set I worked in a Claude chat (claude.ai) rather than my usual coding agent. I set up the Disqus and Clarity accounts myself, and Claude wrote the code, which I pasted into GitHub's web editor.
+
+### Prompt 7 — Disqus comment board
+
+**What I asked:** Add a Disqus comment section to the bottom of the main page only (the Closing list), using my shortname `lastbatch`, with page.url set to my live address
+and a fixed page.identifier so every comment lands in one thread. Because the Closing list and This week tabs switch without reloading, the embed must load once and use
+DISQUS.reset when the Closing list mounts again.
+
+**What came back:** A new `src/components/DisqusComments.tsx` that loads the Disqus Universal Code once, sets page.url and page.identifier ("home"), calls DISQUS.reset on
+remount, and shows one line inviting feedback. Two lines in `App.tsx` place it under the Closing list, above the footer.
+
+**What I changed next and why:** The script downloaded, but the comment box never appeared. The browser console showed "parseColor received unparseable color: oklch(...)". My app uses Tailwind CSS v4, which writes colours in oklch, and the Disqus embed cannot parse them when it reads the page's colours. The fix was to set hex colours (#1c1917 text, #fafaf9 background) directly on the #disqus_thread container. After that, the board loaded and I posted my own comment.
+
+### Prompt 8 — Microsoft Clarity and the privacy notice
+
+**What I asked:** Add my Clarity tracking code to the head of `index.html` so it runs only on my live Vercel address, and add a footer notice naming Clarity and Disqus with
+links to the Microsoft Privacy Statement, the Disqus privacy policy and the Disqus data sharing settings.
+
+**What came back:** The Clarity snippet (project ID unchanged) wrapped in a check on window.location.hostname, and a footer paragraph with the notice and three links, placed
+under the existing data.gov.sg licence line.
+
+**What I changed next and why:** Nothing in the code. When I pasted the footer into GitHub's web editor, three `<a` lines were silently dropped; I added them back before committing. I tested both services in an incognito window because my ad blocker hid them in my normal browser. Clarity recorded live sessions the same day.
 
 
