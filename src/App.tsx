@@ -105,7 +105,10 @@ export default function App() {
         {/* Footer with data.gov.sg license attribution */}
         <footer
           id="app-footer"
-          className="mt-auto py-3 px-4 border-t border-stone-200/80 bg-stone-100 text-[11px] text-stone-500 text-center leading-relaxed"
+          className={`mt-auto py-3 px-4 border-t border-stone-200/80 bg-stone-100 text-[11px] text-stone-500 text-center leading-relaxed ${
+            // Room for the pinned Undo bar, so it never covers the footer
+            activeScreen === 'closing' && lastActionItem?.decision ? 'pb-24' : ''
+          }`}
         >
           <p>
             Contains information from{' '}

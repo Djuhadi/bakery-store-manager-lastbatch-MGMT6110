@@ -1,6 +1,6 @@
 import React from 'react';
 import { BakeryItem, DecisionType } from '../types';
-import { Clock, AlertCircle } from 'lucide-react';
+import { Clock, AlertCircle, Trash2 } from 'lucide-react';
 
 interface ClosingItemCardProps {
   item: BakeryItem;
@@ -98,19 +98,23 @@ export const ClosingItemCard: React.FC<ClosingItemCardProps> = ({
           </span>
         </button>
 
-        {/* Pull */}
-        <button
-          id={`btn-pull-${item.id}`}
-          type="button"
-          onClick={() => onDecide(item.id, 'pull')}
-          aria-label={`Mark ${item.name} as Pull`}
-          className="flex flex-col items-center justify-center min-h-[52px] py-2 px-1 rounded-lg bg-rose-50 hover:bg-rose-100 active:bg-rose-200 border-2 border-rose-600 text-rose-950 font-bold transition-transform active:scale-[0.97]"
-        >
-          <span className="text-sm font-extrabold leading-tight text-rose-700">Pull</span>
-          <span className="text-[11px] font-medium text-rose-800 leading-none mt-0.5">
-            Discard
-          </span>
-        </button>
+        {/* Pull: set apart from the two markdowns by a divider and an outline style,
+            but still full size and one tap */}
+        <div className="pl-2 border-l border-stone-200">
+          <button
+            id={`btn-pull-${item.id}`}
+            type="button"
+            onClick={() => onDecide(item.id, 'pull')}
+            aria-label={`Mark ${item.name} as Pull`}
+            className="w-full flex flex-col items-center justify-center min-h-[52px] py-2 px-1 rounded-lg bg-white hover:bg-rose-50 active:bg-rose-100 border-2 border-rose-300 text-rose-950 font-bold transition-transform active:scale-[0.97]"
+          >
+            <span className="text-sm font-extrabold leading-tight text-rose-700">Pull</span>
+            <span className="flex items-center gap-0.5 text-[11px] font-medium text-rose-800 leading-none mt-0.5">
+              <Trash2 className="w-3 h-3" aria-hidden="true" />
+              Discard
+            </span>
+          </button>
+        </div>
       </div>
     </article>
   );

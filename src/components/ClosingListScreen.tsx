@@ -132,27 +132,36 @@ export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
         )}
       </section>
 
-      {/* Quick undo notification toast if an item was just decided */}
+      {/* Undo for the latest decision, pinned to the bottom of the screen so it is in view
+          wherever the manager is on the list */}
       {lastActionItem && lastActionItem.decision && (
-        <div
-          id="recent-undo-banner"
-          className="flex items-center justify-between gap-2 p-3 bg-stone-900 text-stone-100 rounded-lg text-xs font-medium shadow-md animate-fade-in"
-        >
-          <div className="truncate">
-            Decided <span className="font-bold text-amber-300">{lastActionItem.name}</span> as{' '}
-            {lastActionItem.decision === '20_off'
-              ? '20% off'
-              : lastActionItem.decision === '50_off'
-              ? '50% off'
-              : 'Pull'}
-          </div>
-          <button
-            type="button"
-            onClick={() => onUndo(lastActionItem.id)}
-            className="shrink-0 px-2.5 py-1 rounded bg-stone-700 hover:bg-stone-600 text-amber-300 font-bold active:scale-95"
+        <div className="fixed bottom-3 inset-x-0 z-30 flex justify-center px-4 pointer-events-none">
+          <div
+            id="recent-undo-banner"
+            role="status"
+            className="pointer-events-auto w-full max-w-[26rem] flex items-center justify-between gap-2 p-3 bg-stone-900 text-stone-100 rounded-lg text-xs font-medium shadow-lg animate-fade-in"
           >
-            Undo
-          </button>
+            <div className="truncate">
+              {lastActionItem.decision === 'pull' ? (
+                <>
+                  Pulled <span className="font-bold text-rose-300">{lastActionItem.name}</span>
+                </>
+              ) : (
+                <>
+                  Marked down <span className="font-bold text-amber-300">{lastActionItem.name}</span>
+                  {' · '}
+                  {lastActionItem.decision === '20_off' ? '20% off' : '50% off'}
+                </>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => onUndo(lastActionItem.id)}
+              className="shrink-0 px-2.5 py-1 rounded bg-stone-700 hover:bg-stone-600 text-amber-300 font-bold active:scale-95"
+            >
+              Undo
+            </button>
+          </div>
         </div>
       )}
 
