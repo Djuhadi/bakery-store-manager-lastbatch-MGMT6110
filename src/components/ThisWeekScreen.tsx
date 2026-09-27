@@ -29,7 +29,7 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
         </div>
 
         <h2 className="text-xl font-extrabold text-white leading-tight">
-          What was thrown away
+          What was marked down or pulled
         </h2>
         <p className="text-xs text-stone-300 mt-1">
           Review daily markdowns and pulls to calibrate tomorrow’s bake quantities.
@@ -84,7 +84,7 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
             <div
               key={record.id}
               id={`waste-day-${record.id}`}
-              className={`p-3.5 flex items-center justify-between gap-3 text-stone-900 ${
+              className={`p-3.5 flex items-center justify-between gap-2 text-stone-900 ${
                 record.isTonight ? 'bg-amber-50/70' : ''
               }`}
             >
@@ -104,26 +104,29 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 shrink-0 text-right">
-                <div className="text-center px-2 py-1 bg-amber-50 rounded border border-amber-200">
-                  <span className="block text-[10px] font-bold uppercase text-amber-800">
-                    Disc.
+              <div className="flex items-center gap-1.5 shrink-0 text-right">
+                {/* Two short lines keep the box narrow, as "Marked down" wraps in the totals above */}
+                <div className="min-h-[52px] flex flex-col justify-center text-center px-2 py-1 bg-amber-50 rounded border border-amber-200">
+                  <span className="block text-[10px] font-bold uppercase leading-tight text-amber-800">
+                    Marked
+                    <br />
+                    down
                   </span>
                   <span className="block text-sm font-extrabold text-amber-900">
                     {record.markedDownCount}
                   </span>
                 </div>
 
-                <div className="text-center px-2 py-1 bg-rose-50 rounded border border-rose-200">
-                  <span className="block text-[10px] font-bold uppercase text-rose-800">
-                    Pull
+                <div className="min-h-[52px] flex flex-col justify-center text-center px-2 py-1 bg-rose-50 rounded border border-rose-200">
+                  <span className="block text-[10px] font-bold uppercase leading-tight text-rose-800">
+                    Pulled
                   </span>
                   <span className="block text-sm font-extrabold text-rose-900">
                     {record.pulledCount}
                   </span>
                 </div>
 
-                <div className="w-18 text-right">
+                <div className="w-16 text-right">
                   <span className="block text-[10px] font-bold uppercase text-stone-400">
                     Loss
                   </span>
@@ -189,7 +192,7 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
                       </span>
                       <span className="text-stone-300">·</span>
                       <span className="text-[11px] font-bold text-rose-700">
-                        {product.unitsPulled} units discarded
+                        {product.unitsPulled} units pulled
                       </span>
                     </div>
                   </div>
