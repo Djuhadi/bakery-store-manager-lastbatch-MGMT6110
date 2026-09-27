@@ -20,7 +20,7 @@ predictions.md committed at Sat 26 Sep 06:41 AM; first comment for this set on m
 - Bake time is less prominent than category on each card | raised by AK |  theirs 2 | arbiter NOT TAKEN
 - The "5:00 PM Walk" label looks like a button but does nothing | raised by MML  (inside her Finding 3) | theirs 2 | arbiter NOT TAKEN
 - Area list shows 47 forecast zones, including uninhabited ones | raised by MML |  theirs 1 | arbiter NOT TAKEN
-- Technical API information shown to the manager | raised by AK | theirs 1 |  arbiter [N FROM THE ARBITER]
+- Technical API information shown to the manager | raised by AK | theirs 1 |  arbiter 0
 
 ### 3. Found by me, not by them
 - No guidance on choosing 20%, 50% or Pull | my severity 2
