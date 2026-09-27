@@ -8,6 +8,20 @@ export const PRICE_GIVEN_UP: Record<DecisionType, number> = {
   pull: 1,
 };
 
+// Tonight plus the six sample days
+export const DAYS_COVERED = SAMPLE_PAST_SIX_DAYS.length + 1;
+
+/**
+ * What a product's pull pattern suggests, in words the numbers can support.
+ * Pulls show waste but never a sell-out, so the most it says is "consider",
+ * and never how many to bake.
+ */
+export function pullPattern(timesPulled: number): string {
+  if (timesPulled >= 4) return 'Pulled most days. Consider baking less, if it never sold out this week.';
+  if (timesPulled >= 2) return 'Pulled some days. Watch it before changing the bake.';
+  return 'Pulled once. No pattern yet.';
+}
+
 const daysBefore = (date: Date, days: number) => {
   const d = new Date(date);
   d.setDate(d.getDate() - days);

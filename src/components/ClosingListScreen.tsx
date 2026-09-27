@@ -3,6 +3,7 @@ import { BakeryItem, DecisionType } from '../types';
 import { ClosingItemCard } from './ClosingItemCard';
 import { DecidedItemRow } from './DecidedItemRow';
 import { WeatherStrip } from './WeatherStrip';
+import { buildThisWeek, pullPattern, DAYS_COVERED } from '../week';
 import { CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
@@ -13,6 +14,7 @@ interface ClosingListScreenProps {
   lastActionItem?: BakeryItem | null;
   restoredCount: number; // decisions brought back from earlier tonight on this device
   onStartOver: () => void;
+  onReviewWeek: () => void; // opens This week from the done card
 }
 
 export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
@@ -22,8 +24,11 @@ export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
   lastActionItem,
   restoredCount,
   onStartOver,
+  onReviewWeek,
 }) => {
   const [confirmingStartOver, setConfirmingStartOver] = useState(false);
+  // The two products pulled most often, tonight included, for the done card
+  const topPulled = buildThisWeek(items, new Date()).mostPulled.slice(0, 2);
 
   // Undecided items, sorted by bakeMinutes ascending (longest ago / earliest baked first)
   const undecidedItems = useMemo(() => {
@@ -226,6 +231,26 @@ export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
               <div className="text-xs text-rose-700 font-semibold">Pulled / Discard</div>
               <div className="text-xl font-black text-rose-950">{totalPulled} items</div>
             </div>
+          </div>
+
+          {/* Before tomorrow's bake: the products pulled most often, and the way to the full list */}
+          <div id="done-bake-review" className="text-left bg-white/80 border border-emerald-200 rounded-lg p-3 space-y-1.5">
+            <div className="text-xs text-emerald-800 font-bold">
+              Pulled most over the last {DAYS_COVERED} days
+            </div>
+            {topPulled.map((product) => (
+              <p key={product.id} className="text-xs text-stone-700 leading-snug">
+                <span className="font-bold text-stone-900">{product.name}</span>, {product.timesPulled} of{' '}
+                {DAYS_COVERED} days. {pullPattern(product.timesPulled)}
+              </p>
+            ))}
+            <button
+              type="button"
+              onClick={onReviewWeek}
+              className="w-full mt-1 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-bold active:scale-[0.98]"
+            >
+              Review This week before planning tomorrow’s bake
+            </button>
           </div>
 
           <p className="text-xs text-stone-500 pt-1">

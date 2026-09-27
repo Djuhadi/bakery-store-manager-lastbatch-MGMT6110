@@ -1,6 +1,6 @@
 import React from 'react';
 import { BakeryItem } from '../types';
-import { buildThisWeek } from '../week';
+import { buildThisWeek, pullPattern, DAYS_COVERED } from '../week';
 import { TrendingDown, Calendar, AlertOctagon } from 'lucide-react';
 
 interface ThisWeekScreenProps {
@@ -145,13 +145,16 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
         <div className="px-1">
           <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-rose-700">
             <AlertOctagon className="w-3.5 h-3.5" />
-            <span>Bake Less of These</span>
+            <span>Candidates to Bake Less</span>
           </div>
           <h3 className="text-base font-extrabold text-stone-900 mt-0.5">
             Products Pulled Most Often (Worst First)
           </h3>
           <p className="text-xs text-stone-500">
             Ranked by times pulled from shelves over these seven days, tonight included.
+          </p>
+          <p id="sellout-note" className="text-xs font-semibold text-stone-700 mt-1">
+            This counts what was pulled, not what sold out. Check sell-outs before you cut a bake.
           </p>
         </div>
 
@@ -192,9 +195,12 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
                       </span>
                       <span className="text-stone-300">·</span>
                       <span className="text-[11px] font-bold text-rose-700">
-                        {product.unitsPulled} units pulled
+                        {product.unitsPulled} {product.unitsPulled === 1 ? 'unit' : 'units'} pulled
                       </span>
                     </div>
+                    <p className="text-[11px] text-stone-600 leading-snug mt-1">
+                      {pullPattern(product.timesPulled)}
+                    </p>
                   </div>
                 </div>
 
@@ -202,10 +208,10 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
                 <div className="text-right shrink-0">
                   <div className="inline-flex flex-col items-end">
                     <span className="text-base font-black text-rose-700 tabular-nums">
-                      {product.timesPulled}×
+                      {product.timesPulled} of {DAYS_COVERED}
                     </span>
                     <span className="text-[10px] uppercase font-bold text-stone-500">
-                      pulled this wk
+                      days pulled
                     </span>
                     <span className="text-[11px] font-semibold text-stone-700 mt-0.5">
                       -${product.estimatedLoss.toFixed(2)}

@@ -89,6 +89,10 @@ export default function App() {
               lastActionItem={lastActionItem}
               restoredCount={restoredCount}
               onStartOver={handleStartOver}
+              onReviewWeek={() => {
+                setActiveScreen('weekly');
+                window.scrollTo(0, 0);
+              }}
             />
                         {/* Disqus feedback thread: main page only */}
             <DisqusComments />
