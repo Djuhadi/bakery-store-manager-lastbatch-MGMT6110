@@ -1,6 +1,7 @@
 import React from 'react';
 import { BakeryItem, DecisionType } from '../types';
 import { Clock, AlertCircle, Trash2 } from 'lucide-react';
+import { PRICE_GIVEN_UP } from '../week';
 
 interface ClosingItemCardProps {
   item: BakeryItem;
@@ -16,6 +17,11 @@ export const ClosingItemCard: React.FC<ClosingItemCardProps> = ({
   const price20 = (item.fullPrice * 0.8).toFixed(2);
   const price50 = (item.fullPrice * 0.5).toFixed(2);
   const fullPriceFormatted = item.fullPrice.toFixed(2);
+
+  // Loss against full price on every unit left, worked out as This week's Loss is
+  const lossFor = (decision: DecisionType) =>
+    (item.quantityLeft * item.fullPrice * PRICE_GIVEN_UP[decision]).toFixed(2);
+  const leftLabel = item.quantityLeft === 1 ? 'the 1 left' : `all ${item.quantityLeft} left`;
 
   return (
     <article
@@ -80,7 +86,7 @@ export const ClosingItemCard: React.FC<ClosingItemCardProps> = ({
         >
           <span className="text-sm font-extrabold leading-tight">20% off</span>
           <span className="text-[11px] font-medium text-amber-900 leading-none mt-0.5">
-            ${price20}
+            ${price20} each
           </span>
         </button>
 
@@ -94,7 +100,7 @@ export const ClosingItemCard: React.FC<ClosingItemCardProps> = ({
         >
           <span className="text-sm font-extrabold leading-tight">50% off</span>
           <span className="text-[11px] font-medium text-orange-900 leading-none mt-0.5">
-            ${price50}
+            ${price50} each
           </span>
         </button>
 
@@ -116,6 +122,23 @@ export const ClosingItemCard: React.FC<ClosingItemCardProps> = ({
           </button>
         </div>
       </div>
+
+      {/* What each choice gives up against full price, for every unit left */}
+      <p id={`loss-line-${item.id}`} className="text-[11px] text-stone-500 leading-snug mt-2">
+        {/* Each option stays on one line, so a wrap never splits a label from its amount */}
+        Loss on {leftLabel}:{' '}
+        <span className="whitespace-nowrap">
+          20% off <span className="font-semibold text-stone-700">${lossFor('20_off')}</span>
+        </span>{' '}
+        ·{' '}
+        <span className="whitespace-nowrap">
+          50% off <span className="font-semibold text-stone-700">${lossFor('50_off')}</span>
+        </span>{' '}
+        ·{' '}
+        <span className="whitespace-nowrap">
+          Pull <span className="font-semibold text-stone-700">${lossFor('pull')}</span>
+        </span>
+      </p>
     </article>
   );
 };

@@ -1,8 +1,8 @@
 import { BakeryItem, DayWasteRecord, DecisionType, PulledProductRanking } from './types';
 import { SAMPLE_PAST_SIX_DAYS, MOST_PULLED_PRODUCTS } from './data';
 
-// Share of the full price given up by each decision
-const PRICE_GIVEN_UP: Record<DecisionType, number> = {
+// Share of the full price given up by each decision (also used for the loss line on each card)
+export const PRICE_GIVEN_UP: Record<DecisionType, number> = {
   '20_off': 0.2,
   '50_off': 0.5,
   pull: 1,
