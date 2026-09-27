@@ -1,16 +1,16 @@
 import React from 'react';
-import { DayWasteRecord, PulledProductRanking } from '../types';
+import { BakeryItem } from '../types';
+import { buildThisWeek } from '../week';
 import { TrendingDown, Calendar, AlertOctagon } from 'lucide-react';
 
 interface ThisWeekScreenProps {
-  records: DayWasteRecord[];
-  mostPulled: PulledProductRanking[];
+  items: BakeryItem[]; // tonight's Closing list, including its decisions
 }
 
-export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({
-  records,
-  mostPulled,
-}) => {
+export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
+  // Tonight's live row plus six sample days, dated from today
+  const { records, mostPulled, coverage, lastDecisionAt } = buildThisWeek(items, new Date());
+
   // Aggregate 7-day totals for fast manager scanning
   const totalMarkedDown = records.reduce((sum, r) => sum + r.markedDownCount, 0);
   const totalPulled = records.reduce((sum, r) => sum + r.pulledCount, 0);
@@ -33,6 +33,10 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({
         </h2>
         <p className="text-xs text-stone-300 mt-1">
           Review daily markdowns and pulls to calibrate tomorrow’s bake quantities.
+        </p>
+        <p id="weekly-coverage-note" className="text-xs text-amber-200 mt-2 leading-relaxed">
+          <span className="font-bold">{coverage}.</span> Tonight is live from your Closing list.
+          Earlier days are sample history for this demo. All counts are units.
         </p>
 
         {/* 3 Metric cards */}
@@ -80,14 +84,23 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({
             <div
               key={record.id}
               id={`waste-day-${record.id}`}
-              className="p-3.5 flex items-center justify-between gap-3 text-stone-900"
+              className={`p-3.5 flex items-center justify-between gap-3 text-stone-900 ${
+                record.isTonight ? 'bg-amber-50/70' : ''
+              }`}
             >
               <div className="min-w-0">
-                <div className="font-bold text-base text-stone-900 leading-snug">
+                <div className="font-bold text-base text-stone-900 leading-snug flex items-center gap-1.5">
                   {record.dayLabel}
+                  {record.isTonight && (
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-emerald-800 bg-emerald-100 border border-emerald-300 rounded px-1.5 py-px">
+                      Live
+                    </span>
+                  )}
                 </div>
                 <div className="text-xs text-stone-500 mt-0.5">
                   {record.dateStr}
+                  {record.isTonight &&
+                    (lastDecisionAt ? ` · last decision ${lastDecisionAt}` : ' · no decisions yet')}
                 </div>
               </div>
 
@@ -135,7 +148,7 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({
             Products Pulled Most Often (Worst First)
           </h3>
           <p className="text-xs text-stone-500">
-            Ranked by total times pulled from shelves this week.
+            Ranked by times pulled from shelves over these seven days, tonight included.
           </p>
         </div>
 

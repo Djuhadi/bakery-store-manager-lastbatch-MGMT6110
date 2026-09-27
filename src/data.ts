@@ -1,4 +1,4 @@
-import { BakeryItem, DayWasteRecord, PulledProductRanking } from './types';
+import { BakeryItem, SampleDayRecord, PulledProductRanking } from './types';
 
 /**
  * All initial invented values for LastBatch bakery closing and weekly waste.
@@ -135,69 +135,51 @@ export const INITIAL_CLOSING_ITEMS: BakeryItem[] = [
 ];
 
 /**
- * Historical records for the last 7 days (Monday through Sunday prior to today).
+ * Invented history for the six days before today, most recent first.
+ * This week adds tonight's live row on top, and dates every row from today's date.
  */
-export const LAST_SEVEN_DAYS_WASTE: DayWasteRecord[] = [
+export const SAMPLE_PAST_SIX_DAYS: SampleDayRecord[] = [
   {
-    id: 'day-7',
-    dayLabel: 'Monday',
-    dateStr: 'Sep 7',
+    id: 'day-1',
     markedDownCount: 18,
     pulledCount: 2,
     moneyLost: 28.50,
   },
   {
-    id: 'day-6',
-    dayLabel: 'Sunday',
-    dateStr: 'Sep 6',
+    id: 'day-2',
     markedDownCount: 22,
     pulledCount: 4,
     moneyLost: 42.00,
   },
   {
-    id: 'day-5',
-    dayLabel: 'Saturday',
-    dateStr: 'Sep 5',
+    id: 'day-3',
     markedDownCount: 19,
     pulledCount: 3,
     moneyLost: 34.50,
   },
   {
     id: 'day-4',
-    dayLabel: 'Friday',
-    dateStr: 'Sep 4',
     markedDownCount: 14,
     pulledCount: 3,
     moneyLost: 31.00,
   },
   {
-    id: 'day-3',
-    dayLabel: 'Thursday',
-    dateStr: 'Sep 3',
+    id: 'day-5',
     markedDownCount: 16,
     pulledCount: 2,
     moneyLost: 26.50,
   },
   {
-    id: 'day-2',
-    dayLabel: 'Wednesday',
-    dateStr: 'Sep 2',
+    id: 'day-6',
     markedDownCount: 13,
     pulledCount: 1,
     moneyLost: 19.80,
   },
-  {
-    id: 'day-1',
-    dayLabel: 'Tuesday',
-    dateStr: 'Sep 1',
-    markedDownCount: 15,
-    pulledCount: 3,
-    moneyLost: 32.70,
-  },
 ];
 
 /**
- * Products pulled most often over the last 7 days, worst first (highest pulled count first).
+ * Products pulled most often over the six sample days, worst first (highest pulled count first).
+ * This week adds tonight's pulls before ranking.
  */
 export const MOST_PULLED_PRODUCTS: PulledProductRanking[] = [
   {

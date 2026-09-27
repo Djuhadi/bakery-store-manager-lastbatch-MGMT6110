@@ -10,16 +10,21 @@ export interface BakeryItem {
   fullPrice: number;
   decision?: DecisionType;
   decidedAt?: string;
+  decidedAtMs?: number; // when the decision was made, for "last decision" on This week
 }
 
 export interface DayWasteRecord {
   id: string;
   dayLabel: string; // e.g. "Sunday (Yesterday)"
   dateStr: string;  // e.g. "Sep 6"
-  markedDownCount: number;
-  pulledCount: number;
+  markedDownCount: number; // units
+  pulledCount: number;     // units
   moneyLost: number; // in dollars
+  isTonight?: boolean; // built live from tonight's Closing list decisions
 }
+
+// A sample day before today; its weekday and date are worked out from today's date.
+export type SampleDayRecord = Omit<DayWasteRecord, 'dayLabel' | 'dateStr' | 'isTonight'>;
 
 export interface PulledProductRanking {
   id: string;

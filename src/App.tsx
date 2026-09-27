@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BakeryItem, DecisionType } from './types';
-import { INITIAL_CLOSING_ITEMS, LAST_SEVEN_DAYS_WASTE, MOST_PULLED_PRODUCTS } from './data';
+import { INITIAL_CLOSING_ITEMS } from './data';
 import { Header } from './components/Header';
 import { ClosingListScreen } from './components/ClosingListScreen';
 import { ThisWeekScreen } from './components/ThisWeekScreen';
@@ -28,6 +28,7 @@ export default function App() {
               ...item,
               decision,
               decidedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              decidedAtMs: Date.now(),
             }
           : item
       );
@@ -39,7 +40,7 @@ export default function App() {
     setItems((prevItems) =>
       prevItems.map((item) =>
         item.id === itemId
-          ? { ...item, decision: undefined, decidedAt: undefined }
+          ? { ...item, decision: undefined, decidedAt: undefined, decidedAtMs: undefined }
           : item
       )
     );
@@ -79,10 +80,7 @@ export default function App() {
         {/* Screen 2: This week */}
         {activeScreen === 'weekly' && (
           <main className="flex-1">
-            <ThisWeekScreen
-              records={LAST_SEVEN_DAYS_WASTE}
-              mostPulled={MOST_PULLED_PRODUCTS}
-            />
+            <ThisWeekScreen items={items} />
           </main>
         )}
 
