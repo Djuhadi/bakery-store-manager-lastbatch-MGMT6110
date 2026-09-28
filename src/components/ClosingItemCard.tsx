@@ -32,15 +32,11 @@ export const ClosingItemCard: React.FC<ClosingItemCardProps> = ({
           : 'border-stone-200'
       }`}
     >
-      {/* Top Meta: Category & Urgency Badge */}
+      {/* Top Meta: bake time first and never wrapped, category secondary */}
       <div className="flex items-center justify-between gap-2 mb-1.5">
-        <span className="inline-block text-xs font-semibold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200">
-          {item.category}
-        </span>
-
-        <div className="flex items-center gap-1.5 text-xs font-medium text-stone-600">
-          <Clock className="w-3.5 h-3.5 text-stone-400" />
-          <span className="font-semibold text-stone-800">Baked {item.bakedAt}</span>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <Clock className="w-4 h-4 text-stone-500" />
+          <span className="text-sm font-bold text-stone-900 whitespace-nowrap">Baked {item.bakedAt}</span>
           {isUrgent && (
             <span className="flex items-center gap-0.5 text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded text-[11px] font-bold">
               <AlertCircle className="w-3 h-3" />
@@ -48,6 +44,10 @@ export const ClosingItemCard: React.FC<ClosingItemCardProps> = ({
             </span>
           )}
         </div>
+
+        <span className="text-[11px] font-medium text-stone-500 text-right leading-tight">
+          {item.category}
+        </span>
       </div>
 
       {/* Main Item Info: Name, Quantity, Full Price */}
