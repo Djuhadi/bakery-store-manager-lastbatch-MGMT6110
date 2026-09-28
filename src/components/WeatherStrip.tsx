@@ -4,6 +4,16 @@ import { CloudRain, CloudSun, Cloud, Sun, CloudLightning, Loader2, Info } from '
 
 const STORAGE_KEY = 'lastbatch_forecast_area';
 
+// Forecast areas where no shop can be: reservoirs, and closed or uninhabited islands
+const NO_SHOP_AREAS = [
+  'Central Water Catchment',
+  'Western Water Catchment',
+  'Jurong Island',
+  'Pulau Tekong',
+  'Southern Islands',
+  'Western Islands',
+];
+
 // Words in a data.gov.sg forecast that mean rain during the window
 const WET_WORDS = ['thunder', 'storm', 'rain', 'shower'];
 const isWetForecast = (forecast: string) =>
@@ -81,6 +91,15 @@ export const WeatherStrip: React.FC = () => {
     return 'City';
   });
 
+  // Whether the manager has ever picked their shop's area on this device
+  const [areaChosen, setAreaChosen] = useState<boolean>(() => {
+    try {
+      return !!localStorage.getItem(STORAGE_KEY);
+    } catch {
+      return false;
+    }
+  });
+
   const [availableAreas, setAvailableAreas] = useState<string[]>(DEFAULT_AREAS);
   const [state, setState] = useState<ForecastState>({ status: 'loading' });
 
@@ -142,6 +161,7 @@ export const WeatherStrip: React.FC = () => {
 
   const handleAreaChange = (newArea: string) => {
     setSelectedArea(newArea);
+    setAreaChosen(true);
     try {
       localStorage.setItem(STORAGE_KEY, newArea);
     } catch {
@@ -166,10 +186,13 @@ export const WeatherStrip: React.FC = () => {
     return <Cloud className="w-8 h-8 text-stone-500 shrink-0" />;
   };
 
+  // Only places a shop could be, from either the provider's list or the fallback list
+  const shopAreas = availableAreas.filter((areaName) => !NO_SHOP_AREAS.includes(areaName));
+
   // Ensure currently selected area is in the dropdown even if not in default list
-  const displayAreas = availableAreas.includes(selectedArea)
-    ? availableAreas
-    : [selectedArea, ...availableAreas];
+  const displayAreas = shopAreas.includes(selectedArea)
+    ? shopAreas
+    : [selectedArea, ...shopAreas];
 
   return (
     <div
@@ -183,7 +206,7 @@ export const WeatherStrip: React.FC = () => {
             htmlFor="forecast-area-select"
             className="text-xs font-bold uppercase tracking-wider text-stone-500 shrink-0"
           >
-            Area:
+            Shop area:
           </label>
           <select
             id="forecast-area-select"
@@ -206,6 +229,13 @@ export const WeatherStrip: React.FC = () => {
           </span>
         )}
       </div>
+
+      {/* First visit only: say the area is a default, and that choosing it is a one-off */}
+      {!areaChosen && (
+        <p id="area-first-visit-note" className="text-xs font-semibold text-amber-800 leading-snug">
+          Showing {selectedArea}. Set your shop's area once, and it's remembered on this device.
+        </p>
+      )}
 
       {/* 1. Loading State */}
       {state.status === 'loading' && (
