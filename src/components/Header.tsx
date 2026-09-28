@@ -1,4 +1,5 @@
 import React from 'react';
+import { Clock } from 'lucide-react';
 
 interface HeaderProps {
   activeScreen: 'closing' | 'weekly';
@@ -29,8 +30,10 @@ export const Header: React.FC<HeaderProps> = ({
               Decide markdowns on unsold stock before closing.
             </p>
           </div>
-          <div className="text-xs font-semibold px-2.5 py-1 rounded bg-stone-800 text-stone-300 border border-stone-700 shrink-0">
-            5:00 PM Walk
+          {/* Plain text, not a box: in the header only the tabs below are buttons */}
+          <div className="flex items-center gap-1 text-xs font-medium text-stone-400 shrink-0 mt-1">
+            <Clock className="w-3.5 h-3.5" aria-hidden="true" />
+            <span>5:00 PM walk</span>
           </div>
         </div>
 
