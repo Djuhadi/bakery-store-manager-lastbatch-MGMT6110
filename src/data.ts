@@ -1,4 +1,4 @@
-import { BakeryItem, SampleDayRecord, PulledProductRanking } from './types';
+import { BakeryItem, SampleDayRecord } from './types';
 
 /**
  * All initial invented values for LastBatch bakery closing and weekly waste.
@@ -136,7 +136,10 @@ export const INITIAL_CLOSING_ITEMS: BakeryItem[] = [
 
 /**
  * Invented history for the six days before today, most recent first.
- * This week adds tonight's live row on top, and dates every row from today's date.
+ * This week adds tonight's live row on top, dates every row from today's date,
+ * and uses a walk saved on this device in place of a sample day when there is one.
+ * Each day's pulls add up to its pulledCount, so the ranking built from these
+ * rows agrees with the daily totals.
  */
 export const SAMPLE_PAST_SIX_DAYS: SampleDayRecord[] = [
   {
@@ -144,90 +147,61 @@ export const SAMPLE_PAST_SIX_DAYS: SampleDayRecord[] = [
     markedDownCount: 18,
     pulledCount: 2,
     moneyLost: 28.50,
+    pulls: [
+      { itemId: 'item-7', units: 1 }, // Ham & Gruyère Croissant
+      { itemId: 'item-11', units: 1 }, // Rosemary Olive Focaccia Square
+    ],
   },
   {
     id: 'day-2',
     markedDownCount: 22,
     pulledCount: 4,
     moneyLost: 42.00,
+    pulls: [
+      { itemId: 'item-7', units: 1 },
+      { itemId: 'item-3', units: 1 }, // Almond Frangipane Croissant
+      { itemId: 'item-10', units: 1 }, // Spinach & Feta Danish
+      { itemId: 'item-1', units: 1 }, // Country Sourdough Batard
+    ],
   },
   {
     id: 'day-3',
     markedDownCount: 19,
     pulledCount: 3,
     moneyLost: 34.50,
+    pulls: [
+      { itemId: 'item-7', units: 1 },
+      { itemId: 'item-11', units: 1 },
+      { itemId: 'item-3', units: 1 },
+    ],
   },
   {
     id: 'day-4',
     markedDownCount: 14,
     pulledCount: 3,
     moneyLost: 31.00,
+    pulls: [
+      { itemId: 'item-7', units: 1 },
+      { itemId: 'item-10', units: 1 },
+      { itemId: 'item-12', units: 1 }, // Lemon Poppyseed Loaf Slice
+    ],
   },
   {
     id: 'day-5',
     markedDownCount: 16,
     pulledCount: 2,
     moneyLost: 26.50,
+    pulls: [
+      { itemId: 'item-11', units: 1 },
+      { itemId: 'item-3', units: 1 },
+    ],
   },
   {
     id: 'day-6',
     markedDownCount: 13,
     pulledCount: 1,
     moneyLost: 19.80,
+    pulls: [{ itemId: 'item-1', units: 1 }],
   },
 ];
 
-/**
- * Products pulled most often over the six sample days, worst first (highest pulled count first).
- * This week adds tonight's pulls before ranking.
- */
-export const MOST_PULLED_PRODUCTS: PulledProductRanking[] = [
-  {
-    id: 'rank-1',
-    name: 'Ham & Gruyère Croissant',
-    category: 'Savory & Lunch',
-    timesPulled: 4,
-    unitsPulled: 5,
-    estimatedLoss: 34.75,
-  },
-  {
-    id: 'rank-2',
-    name: 'Rosemary Olive Focaccia',
-    category: 'Hearth & Sourdough',
-    timesPulled: 3,
-    unitsPulled: 4,
-    estimatedLoss: 20.00,
-  },
-  {
-    id: 'rank-3',
-    name: 'Almond Frangipane Croissant',
-    category: 'Pastries & Viennoiserie',
-    timesPulled: 3,
-    unitsPulled: 3,
-    estimatedLoss: 17.25,
-  },
-  {
-    id: 'rank-4',
-    name: 'Spinach & Feta Danish',
-    category: 'Savory & Lunch',
-    timesPulled: 2,
-    unitsPulled: 2,
-    estimatedLoss: 11.00,
-  },
-  {
-    id: 'rank-5',
-    name: 'Country Sourdough Batard',
-    category: 'Hearth & Sourdough',
-    timesPulled: 2,
-    unitsPulled: 2,
-    estimatedLoss: 17.00,
-  },
-  {
-    id: 'rank-6',
-    name: 'Lemon Poppyseed Loaf Slice',
-    category: 'Sweets & Cakes',
-    timesPulled: 1,
-    unitsPulled: 1,
-    estimatedLoss: 4.25,
-  },
-];

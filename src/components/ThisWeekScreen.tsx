@@ -8,8 +8,17 @@ interface ThisWeekScreenProps {
 }
 
 export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
-  // Tonight's live row plus six sample days, dated from today
-  const { records, mostPulled, coverage, lastDecisionAt } = buildThisWeek(items, new Date());
+  // Tonight's live row, then six days dated from today: real walks saved on this device, or sample
+  const { records, mostPulled, coverage, lastDecisionAt, savedDays } = buildThisWeek(items, new Date());
+  const earlierDays = records.length - 1;
+  const historyNote =
+    savedDays === 0
+      ? 'Earlier days are sample history for this demo.'
+      : savedDays === earlierDays
+      ? `All ${earlierDays} earlier days are from your own walks on this device.`
+      : `${savedDays} of the ${earlierDays} earlier days ${
+          savedDays === 1 ? 'is' : 'are'
+        } from your own walks on this device; the rest are sample history.`;
 
   // Aggregate 7-day totals for fast manager scanning
   const totalMarkedDown = records.reduce((sum, r) => sum + r.markedDownCount, 0);
@@ -35,8 +44,8 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
           Review daily markdowns and pulls to calibrate tomorrow’s bake quantities.
         </p>
         <p id="weekly-coverage-note" className="text-xs text-amber-200 mt-2 leading-relaxed">
-          <span className="font-bold">{coverage}.</span> Tonight is live from your Closing list.
-          Earlier days are sample history for this demo. All counts are units.
+          <span className="font-bold">{coverage}.</span> Tonight is live from your Closing list.{' '}
+          {historyNote} All counts are units.
         </p>
 
         {/* 3 Metric cards */}
@@ -85,22 +94,27 @@ export const ThisWeekScreen: React.FC<ThisWeekScreenProps> = ({ items }) => {
               key={record.id}
               id={`waste-day-${record.id}`}
               className={`p-3.5 flex items-center justify-between gap-2 text-stone-900 ${
-                record.isTonight ? 'bg-amber-50/70' : ''
+                record.kind === 'tonight' ? 'bg-amber-50/70' : ''
               }`}
             >
               <div className="min-w-0">
                 <div className="font-bold text-base text-stone-900 leading-snug flex items-center gap-1.5">
                   {record.dayLabel}
-                  {record.isTonight && (
-                    <span className="text-[10px] font-bold uppercase tracking-wide text-emerald-800 bg-emerald-100 border border-emerald-300 rounded px-1.5 py-px">
+                  {record.kind === 'tonight' && (
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-emerald-800 bg-emerald-100 border border-emerald-300 rounded px-1 py-px">
                       Live
                     </span>
                   )}
                 </div>
+                {/* Every row says where its numbers come from */}
                 <div className="text-xs text-stone-500 mt-0.5">
                   {record.dateStr}
-                  {record.isTonight &&
+                  {record.kind === 'tonight' &&
                     (lastDecisionAt ? ` · last decision ${lastDecisionAt}` : ' · no decisions yet')}
+                  {record.kind === 'saved' && (
+                    <span className="font-semibold text-emerald-700"> · your walk</span>
+                  )}
+                  {record.kind === 'sample' && <span className="italic"> · sample</span>}
                 </div>
               </div>
 

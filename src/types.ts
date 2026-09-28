@@ -20,11 +20,25 @@ export interface DayWasteRecord {
   markedDownCount: number; // units
   pulledCount: number;     // units
   moneyLost: number; // in dollars
-  isTonight?: boolean; // built live from tonight's Closing list decisions
+  // Where the row's numbers come from: tonight's live list, a walk saved on this
+  // device on that date, or sample history
+  kind: 'tonight' | 'saved' | 'sample';
+}
+
+// Units of one Closing list item pulled on one day
+export interface DayPull {
+  itemId: string;
+  units: number;
 }
 
 // A sample day before today; its weekday and date are worked out from today's date.
-export type SampleDayRecord = Omit<DayWasteRecord, 'dayLabel' | 'dateStr' | 'isTonight'>;
+export interface SampleDayRecord {
+  id: string;
+  markedDownCount: number;
+  pulledCount: number; // equals the units in pulls
+  moneyLost: number;
+  pulls: DayPull[];
+}
 
 export interface PulledProductRanking {
   id: string;

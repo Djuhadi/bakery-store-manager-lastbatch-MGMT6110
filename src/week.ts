@@ -1,5 +1,6 @@
-import { BakeryItem, DayWasteRecord, DecisionType, PulledProductRanking } from './types';
-import { SAMPLE_PAST_SIX_DAYS, MOST_PULLED_PRODUCTS } from './data';
+import { BakeryItem, DayPull, DayWasteRecord, DecisionType, PulledProductRanking } from './types';
+import { INITIAL_CLOSING_ITEMS, SAMPLE_PAST_SIX_DAYS } from './data';
+import { SavedDecisions, isSavedDecision, loadPastWalks, localDate } from './savedWalk';
 
 // Share of the full price given up by each decision (also used for the loss line on each card)
 export const PRICE_GIVEN_UP: Record<DecisionType, number> = {
@@ -8,7 +9,7 @@ export const PRICE_GIVEN_UP: Record<DecisionType, number> = {
   pull: 1,
 };
 
-// Tonight plus the six sample days
+// Tonight plus the six days before it
 export const DAYS_COVERED = SAMPLE_PAST_SIX_DAYS.length + 1;
 
 /**
@@ -33,64 +34,107 @@ const shortDate = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', d
 const shortDay = (d: Date) =>
   d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
+// A night's totals from its decided items, in units, as the loss line on each card works them out
+const nightTotals = (decided: BakeryItem[]) => ({
+  markedDownCount: decided
+    .filter((item) => item.decision !== 'pull')
+    .reduce((sum, item) => sum + item.quantityLeft, 0),
+  pulledCount: decided
+    .filter((item) => item.decision === 'pull')
+    .reduce((sum, item) => sum + item.quantityLeft, 0),
+  moneyLost: decided.reduce(
+    (sum, item) => sum + item.quantityLeft * item.fullPrice * PRICE_GIVEN_UP[item.decision!],
+    0
+  ),
+});
+
+const pullsOf = (decided: BakeryItem[]): DayPull[] =>
+  decided
+    .filter((item) => item.decision === 'pull')
+    .map((item) => ({ itemId: item.id, units: item.quantityLeft }));
+
+// A saved night's decisions applied to the Closing list it was made on
+const decidedOnNight = (saved: SavedDecisions): BakeryItem[] =>
+  INITIAL_CLOSING_ITEMS.filter((item) => isSavedDecision(saved[item.id])).map((item) => ({
+    ...item,
+    ...saved[item.id],
+  }));
+
 export interface ThisWeek {
-  records: DayWasteRecord[];         // tonight first, then the six sample days
-  mostPulled: PulledProductRanking[]; // sample pulls plus tonight's, worst first
+  records: DayWasteRecord[];         // tonight first, then the six days before it
+  mostPulled: PulledProductRanking[]; // built from the same seven rows, worst first
   coverage: string;                   // e.g. "Tue, Sep 22 to Mon, Sep 28"
   lastDecisionAt: string | null;      // time of tonight's latest decision still standing
+  savedDays: number;                  // earlier days that are real walks saved on this device
 }
 
 /**
- * Builds the This week tab: a live row for tonight from the Closing list,
- * and six sample days dated back from today.
+ * Builds the This week tab: a live row for tonight from the Closing list, then
+ * each of the six days before it, from a walk saved on this device on that date
+ * or from sample history. The ranking is built from the same seven rows, so it
+ * always agrees with them.
  */
-export function buildThisWeek(items: BakeryItem[], today: Date): ThisWeek {
-  const decided = items.filter((item) => item.decision);
-  const pulled = decided.filter((item) => item.decision === 'pull');
+export function buildThisWeek(
+  items: BakeryItem[],
+  today: Date,
+  pastWalks: Record<string, SavedDecisions> = loadPastWalks(today)
+): ThisWeek {
+  const decidedTonight = items.filter((item) => item.decision);
 
   const tonight: DayWasteRecord = {
     id: 'tonight',
     dayLabel: 'Tonight',
     dateStr: shortDate(today),
-    markedDownCount: decided
-      .filter((item) => item.decision !== 'pull')
-      .reduce((sum, item) => sum + item.quantityLeft, 0),
-    pulledCount: pulled.reduce((sum, item) => sum + item.quantityLeft, 0),
-    moneyLost: decided.reduce(
-      (sum, item) => sum + item.quantityLeft * item.fullPrice * PRICE_GIVEN_UP[item.decision!],
-      0
-    ),
-    isTonight: true,
+    ...nightTotals(decidedTonight),
+    kind: 'tonight',
   };
+  const nightsPulls: DayPull[][] = [pullsOf(decidedTonight)];
 
-  const pastDays: DayWasteRecord[] = SAMPLE_PAST_SIX_DAYS.map((day, idx) => {
+  const pastDays: DayWasteRecord[] = SAMPLE_PAST_SIX_DAYS.map((sample, idx) => {
     const date = daysBefore(today, idx + 1);
-    return { ...day, dayLabel: weekdayName(date), dateStr: shortDate(date) };
+    const labels = { dayLabel: weekdayName(date), dateStr: shortDate(date) };
+    const saved = pastWalks[localDate(date)];
+    const decided = saved ? decidedOnNight(saved) : [];
+    if (decided.length) {
+      nightsPulls.push(pullsOf(decided));
+      return { id: `saved-${localDate(date)}`, ...labels, ...nightTotals(decided), kind: 'saved' };
+    }
+    nightsPulls.push(sample.pulls);
+    return {
+      id: sample.id,
+      ...labels,
+      markedDownCount: sample.markedDownCount,
+      pulledCount: sample.pulledCount,
+      moneyLost: sample.moneyLost,
+      kind: 'sample',
+    };
   });
 
-  // Fold tonight's pulls into the sample ranking, then re-rank worst first
-  const mostPulled = MOST_PULLED_PRODUCTS.map((product) => ({ ...product }));
-  pulled.forEach((item) => {
-    const loss = item.quantityLeft * item.fullPrice;
-    const existing = mostPulled.find((product) => product.name === item.name);
-    if (existing) {
-      existing.timesPulled += 1;
-      existing.unitsPulled += item.quantityLeft;
-      existing.estimatedLoss += loss;
-    } else {
-      mostPulled.push({
-        id: `tonight-${item.id}`,
+  // Rank by Closing list item across the same seven rows, worst first
+  const byItem = new Map<string, PulledProductRanking>();
+  nightsPulls.forEach((pulls) =>
+    pulls.forEach(({ itemId, units }) => {
+      const item = INITIAL_CLOSING_ITEMS.find((i) => i.id === itemId);
+      if (!item) return;
+      const ranked = byItem.get(itemId) ?? {
+        id: itemId,
         name: item.name,
         category: item.category,
-        timesPulled: 1,
-        unitsPulled: item.quantityLeft,
-        estimatedLoss: loss,
-      });
-    }
-  });
-  mostPulled.sort((a, b) => b.timesPulled - a.timesPulled || b.unitsPulled - a.unitsPulled);
+        timesPulled: 0,
+        unitsPulled: 0,
+        estimatedLoss: 0,
+      };
+      ranked.timesPulled += 1;
+      ranked.unitsPulled += units;
+      ranked.estimatedLoss += units * item.fullPrice;
+      byItem.set(itemId, ranked);
+    })
+  );
+  const mostPulled = [...byItem.values()].sort(
+    (a, b) => b.timesPulled - a.timesPulled || b.unitsPulled - a.unitsPulled
+  );
 
-  const latestMs = Math.max(0, ...decided.map((item) => item.decidedAtMs ?? 0));
+  const latestMs = Math.max(0, ...decidedTonight.map((item) => item.decidedAtMs ?? 0));
   const lastDecisionAt = latestMs
     ? new Date(latestMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     : null;
@@ -100,5 +144,6 @@ export function buildThisWeek(items: BakeryItem[], today: Date): ThisWeek {
     mostPulled,
     coverage: `${shortDay(daysBefore(today, SAMPLE_PAST_SIX_DAYS.length))} to ${shortDay(today)}`,
     lastDecisionAt,
+    savedDays: pastDays.filter((day) => day.kind === 'saved').length,
   };
 }
