@@ -4,8 +4,8 @@ Isabella Karunia Djuhadi, Group 3
 
 | Groupmate (initials) | Their live address | Link to my comment | Posted on | Findings |
 |---|---|---|---|---|
-| AK | https://pantrypilot-phi.vercel.app/ | http://disq.us/p/36r0y16 | Sat 26 Sep, 11.26 PM | 3 |
-| CCH | https://singapore-bus-arrivals-mgmt6110.vercel.app/ | http://disq.us/p/36r0zi7 | Sat 26 Sep, 11.26 PM | 4 |
+| AK | https://pantrypilot-phi.vercel.app/ | http://disq.us/p/36r0y16 | Sat 26 Sep, 11.17 PM | 3 |
+| CCH | https://singapore-bus-arrivals-mgmt6110.vercel.app/ | http://disq.us/p/36r0zi7 | Sat 26 Sep, 11.23 PM | 4 |
 | MML | https://skylah-disqus-clarity-nu.vercel.app/ | [full text below] | Sun 27 Sep, 1:47 AM | 3 |
 
 ## My comment on MML's board (link unavailable)
