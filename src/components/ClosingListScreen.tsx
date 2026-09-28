@@ -4,6 +4,8 @@ import { ClosingItemCard } from './ClosingItemCard';
 import { DecidedItemRow } from './DecidedItemRow';
 import { WeatherStrip } from './WeatherStrip';
 import { buildThisWeek, pullPattern, DAYS_COVERED } from '../week';
+
+const BUTTON_HELP_KEY = 'lastbatch_button_help';
 import { CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
@@ -27,6 +29,23 @@ export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
   onReviewWeek,
 }) => {
   const [confirmingStartOver, setConfirmingStartOver] = useState(false);
+
+  // Button help: open until the manager hides it once on this device
+  const [showButtonHelp, setShowButtonHelp] = useState(() => {
+    try {
+      return localStorage.getItem(BUTTON_HELP_KEY) !== 'hidden';
+    } catch {
+      return true;
+    }
+  });
+  const hideButtonHelp = () => {
+    setShowButtonHelp(false);
+    try {
+      localStorage.setItem(BUTTON_HELP_KEY, 'hidden');
+    } catch {
+      // storage restricted: it stays hidden for this visit only
+    }
+  };
   // The two products pulled most often, tonight included, for the done card
   const topPulled = buildThisWeek(items, new Date()).mostPulled.slice(0, 2);
 
@@ -181,8 +200,50 @@ export const ClosingListScreen: React.FC<ClosingListScreenProps> = ({
               <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
               Urgent First · Longest baked on shelf
             </span>
-            <span>Tap decision to settle</span>
+            {showButtonHelp ? (
+              <span>Tap decision to settle</span>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowButtonHelp(true)}
+                className="shrink-0 font-semibold text-stone-700 underline underline-offset-2"
+              >
+                What do the buttons mean?
+              </button>
+            )}
           </div>
+
+          {/* Open on a manager's first visit, then out of the way until asked for */}
+          {showButtonHelp && (
+            <div
+              id="button-help"
+              className="rounded-xl border border-stone-300 bg-white p-3 text-xs text-stone-700 leading-snug space-y-1.5"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-bold text-stone-900">What the buttons do</span>
+                <button
+                  type="button"
+                  onClick={hideButtonHelp}
+                  className="shrink-0 font-semibold underline underline-offset-2"
+                >
+                  Hide
+                </button>
+              </div>
+              <p>
+                <span className="font-bold">20% off / 50% off:</span> sell it tonight at the lower
+                price shown on the button. The line under the buttons shows what each choice loses on
+                all units left.
+              </p>
+              <p>
+                <span className="font-bold">Pull:</span> take it off the shelf and discard it. Nothing
+                is recovered.
+              </p>
+              <p>
+                Items are listed oldest bake first. Your shop's own markdown rules decide which you
+                choose, and every choice can be undone.
+              </p>
+            </div>
+          )}
 
           <AnimatePresence initial={false}>
             {undecidedItems.map((item, index) => (
